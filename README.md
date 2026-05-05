@@ -10,11 +10,11 @@ Public demo:
 https://filipzarzynski.github.io/ancient-unfiltered/
 ```
 
-The demo now previews the v0.3 matched-pair corpus model with 16 Greek
+The demo shows the v0.3 matched-pair corpus model with 16 Greek
 philosophical examples, each pairing a familiar English reception with cited
 Greek wording, swappable meaning paths, and example alternative renderings.
 
-## What v0.2 Gives You
+## What v0.3 Gives You
 
 - **Greek and Latin lookup:** `Auto`, `Greek`, and `Latin` modes.
 - **Clickable text processing:** alphabetic tokens become keyboard-accessible lookup targets.
@@ -24,29 +24,43 @@ Greek wording, swappable meaning paths, and example alternative renderings.
 - **Source sentence estimates:** supported Greek citations such as `Pl. Ap. 18a` are retrieved from Perseus when possible.
 - **Translation context:** retrieved translations are labeled as context, not interpretation.
 - **Local SQLite cache:** repeated `(word, cutoff_year, language)` lookups are cached locally.
+- **Matched-pair corpus explorer:** 16 Greek philosophical seed entries grouped by friendship, community, intelligence, and love.
+- **Path explorer:** token-level branch choices stay visually equal and update a selected-path preview.
+- **Local corpus authoring:** users can add matched pairs with required provenance, keep them in browser storage, and export JSON evidence proposals.
+- **Corpus import validation:** provenance-free imports are rejected before entering the local corpus.
 - **No API keys and no frontend build:** FastAPI, SQLite, static HTML/CSS/JS.
 
-## v0.3 Planning Preview
+## v0.3 Corpus Model
 
-v0.3 is planned around a downloadable matched-pair corpus:
+v0.3 adds a downloadable matched-pair corpus:
 
 - predefined English reception sentence
 - cited original-language wording
 - token-level grammar and meaning paths
 - example selected-path alternative translation
 - local user-added corpus entries
-- JSON export for repository submission and review
+- JSON import/export for repository submission and review
 
-The current planning seed corpus is served at:
+The seed corpus is served at:
 
 ```text
 docs/corpus/v0.3-seed.json
 ```
 
+The local API exposes:
+
+```text
+GET  /api/corpus/seed
+POST /api/corpus/validate
+POST /api/corpus/export
+POST /api/corpus/import
+```
+
 ## What It Still Does Not Do
 
 - It is not an offline corpus. First-time lookups need network access to open endpoints.
-- Greek source sentence retrieval is intentionally narrow in v0.2. Plato `Apology` Stephanus citations are supported first.
+- Greek source sentence retrieval is intentionally narrow. Plato `Apology` Stephanus citations are supported first.
+- Local corpus entries are browser-local until exported.
 - Chronological dates are estimates when derived from author/work mappings.
 - Undated evidence is retained only with an unverified-date label.
 - Dense dictionary prose can still contain source abbreviations that are not fully parsed.
@@ -66,6 +80,29 @@ Then open:
 http://127.0.0.1:8000
 ```
 
+The static public demo is also available from the local server:
+
+```text
+http://127.0.0.1:8000/demo/
+```
+
+## Corpus Explorer Example
+
+Recommended run:
+
+1. Open `http://127.0.0.1:8000`.
+2. Select `Corpus explorer`.
+3. Choose `intelligence - Plato, Apology 21d`.
+4. Click a Greek token such as `οἶδα` to populate the evidence drawer.
+5. Change one or more branch choices and export local JSON after adding a local entry.
+
+Live v0.3 local result on 2026-05-05:
+
+- Seed corpus endpoint returned 16 entries.
+- The browser explorer loaded all seed entries.
+- Local entry validation rejected missing `critical_original.source_url`.
+- Export/import roundtrip preserved `selected_paths`.
+
 ## Greek Smoke Example
 
 Use [examples/plato_apology_17a.txt](examples/plato_apology_17a.txt).
@@ -77,7 +114,7 @@ Recommended run:
 3. Set cutoff year to `-399`.
 4. Click `κατηγόρων`.
 
-Live v0.2 result on 2026-05-05:
+Live v0.3 regression result on 2026-05-05:
 
 - Status `200`.
 - Language resolved to `greek`.
@@ -99,7 +136,7 @@ Recommended run:
 3. Set cutoff year to `-50`.
 4. Click `Gallia`.
 
-Live v0.2 regression result on 2026-05-05:
+Live v0.3 regression result on 2026-05-05:
 
 - Status `200`.
 - Language resolved to `latin`.
@@ -110,12 +147,13 @@ Live v0.2 regression result on 2026-05-05:
 
 ```text
 .
-|-- main.py                # FastAPI app and /api/query route
+|-- main.py                # FastAPI app, /api/query, and /api/corpus routes
+|-- corpus.py              # v0.3 corpus validation/import/export
 |-- database.py            # SQLite cache
 |-- philology.py           # high-level orchestration
 |-- sources/               # morphology, lexica, passages, etymology, chronology
 |-- docs/                  # static GitHub Pages demo
-|   `-- corpus/            # v0.3 planning seed corpus
+|   `-- corpus/            # v0.3 seed corpus
 |-- mempalace.md           # project memory index, not a second spec
 |-- requirements.txt
 |-- static/
@@ -135,23 +173,20 @@ Ancient texts and examples are evidence inputs with their own provenance. They a
 ## Testing
 
 ```bash
-python3 -m py_compile database.py philology.py main.py sources/*.py tests/*.py
+python3 -m py_compile corpus.py database.py philology.py main.py sources/*.py tests/*.py
 .venv/bin/python -m unittest discover
 ```
 
-Validation performed for v0.2 on 2026-05-05:
+Validation performed for v0.3 on 2026-05-05:
 
 - `py_compile` passed.
-- Unit tests passed: 14 tests.
+- Unit tests passed: 21 tests.
 - Greek FastAPI smoke test passed for `κατηγόρων`.
 - Latin FastAPI regression smoke test passed for `Gallia`.
+- Corpus API smoke test passed for `/api/corpus/seed`.
+- Invalid corpus import rejected missing provenance.
+- Export/import roundtrip preserved selected path data.
 - Desktop and mobile headless Chrome screenshots rendered without a frontend build step.
-
-Additional v0.3 planning validation:
-
-- seed corpus JSON parses
-- corpus structure tests verify 16 entries and four entries per subject
-- public demo loads the seed corpus as static JSON
 
 ## License
 

@@ -3,11 +3,11 @@
 ## 1. Project Overview
 
 **Name:** Ancient Unfiltered
-**Release target:** v0.3 planning
+**Release target:** v0.3
 **License:** GNU General Public License v3.0 or later
-**Current baseline:** v0.2 Greek-and-Latin evidence desk
+**Current baseline:** v0.3 matched-pair corpus explorer and Greek-and-Latin evidence desk
 
-Ancient Unfiltered is a local, source-first reading desk for ancient texts. v0.2 expands the v0.1 Latin MVP toward Greek works while improving the interface so it feels useful and inviting to philosophy academics, classicists, students, and independent readers.
+Ancient Unfiltered is a local, source-first reading desk for ancient texts. v0.3 keeps the v0.2 Greek-and-Latin evidence desk and adds a matched-pair corpus explorer so readers can inspect familiar English receptions beside cited original-language wording, branch choices, and alternative renderings.
 
 The product must never imply that there is one correct interpretation of an ancient text. It must show source data, uncertainty, variants, chronological context, and provenance so readers can do their own interpretive work.
 
@@ -163,7 +163,8 @@ v0.2 must preserve the v0.1 local-first architecture.
 
 ```text
 .
-|-- main.py                # FastAPI app and routes
+|-- main.py                # FastAPI app, routes, and v0.3 corpus API
+|-- corpus.py              # v0.3 matched-pair validation/import/export
 |-- database.py            # SQLite cache
 |-- philology.py           # existing shared parsing/filter logic
 |-- mempalace.md           # index-only project memory map
@@ -173,7 +174,7 @@ v0.2 must preserve the v0.1 local-first architecture.
 |   |-- passages.py
 |   `-- etymology.py
 |-- docs/                  # static GitHub Pages demo
-|   `-- corpus/            # public seed corpus for demo and v0.3 planning
+|   `-- corpus/            # public v0.3 seed corpus for demo and local app
 |-- static/
 |   |-- index.html
 |   |-- style.css
@@ -251,6 +252,56 @@ The v0.2 response should extend, not break, the v0.1 shape.
   ],
   "warnings": [
     "No single branch is selected as correct."
+  ]
+}
+```
+
+The v0.3 corpus API adds local matched-pair evidence proposals. The seed corpus
+is read-only, while user-added entries live in browser storage until exported.
+Every imported or exported entry must pass the same provenance validation.
+
+Required endpoints:
+
+```text
+GET  /api/corpus/seed
+POST /api/corpus/validate
+POST /api/corpus/export
+POST /api/corpus/import
+```
+
+Exported corpus patches use this high-level shape:
+
+```json
+{
+  "version": "v0.3-export",
+  "status": "evidence proposal",
+  "entries": [
+    {
+      "id": "stable-entry-id",
+      "theme": "community",
+      "author": "source author",
+      "work": "source work",
+      "citation": "source citation",
+      "current_english": "reception anchor",
+      "critical_original": {
+        "language": "grc",
+        "text": "cited original-language wording",
+        "source_label": "provider or edition label",
+        "source_url": "https://source.example"
+      },
+      "path_options": [
+        {
+          "token": "λόγος",
+          "lemma": "λόγος",
+          "options": ["speech", "account", "reasoning"]
+        }
+      ],
+      "selected_paths": {
+        "λόγος": "account"
+      },
+      "alternative_translations": ["one possible rendering"],
+      "example_selected_output": "selected-path preview"
+    }
   ]
 }
 ```
@@ -405,9 +456,9 @@ v0.2 is ready only when:
 - README documents Greek and Latin examples with real outcomes.
 - the app still runs with `pip install -r requirements.txt && uvicorn main:app --reload`.
 
-## 10. v0.3 Planning: Matched-Pair Corpus And Path Explorer
+## 10. v0.3 Release: Matched-Pair Corpus And Path Explorer
 
-v0.3 should turn the v0.2 evidence desk into a corpus-backed translation
+v0.3 turns the v0.2 evidence desk into a corpus-backed translation
 experiment surface.
 
 The core v0.3 object is a matched pair:
@@ -455,7 +506,7 @@ Each seed entry must include:
 
 ### 10.2. User Corpus Contributions
 
-v0.3 should let users add their own matched pairs locally, then export them for
+v0.3 must let users add their own matched pairs locally, then export them for
 review or repository submission.
 
 Required local workflow:
@@ -465,7 +516,7 @@ Required local workflow:
 3. user records source provenance and citation
 4. app queries public morphology and lexicon sources for original tokens
 5. user chooses possible grammar/meaning paths
-6. app records selected paths and generated alternative translation drafts
+6. app records selected paths and example alternative translation drafts
 7. user exports a JSON corpus patch
 
 Repository submissions must be treated as evidence proposals. A submitted pair
@@ -473,7 +524,7 @@ cannot enter the seed corpus without provenance, schema validation, and review.
 
 ### 10.3. Path Explorer UI
 
-The v0.3 UI should show:
+The v0.3 UI must show:
 
 - current English reception at the top
 - interactive original wording below it
@@ -481,7 +532,7 @@ The v0.3 UI should show:
 - warnings for uncertain, missing, or post-cutoff evidence
 - selected-path translation preview below the original wording
 - all viable alternatives with equal visual weight
-- export controls for the matched pair or whole corpus
+- export controls for local corpus evidence proposals
 
 "Grammatically and logically sound" means:
 
@@ -492,7 +543,7 @@ The v0.3 UI should show:
 
 ### 10.4. v0.3 Public Demo
 
-The GitHub Pages demo should preview the v0.3 corpus model with the seed corpus.
+The GitHub Pages demo must show the v0.3 corpus model with the seed corpus.
 It may be static, but it must load the seed JSON, show all 16 entries, and let a
 reader inspect path options and example selected outputs.
 
@@ -511,3 +562,16 @@ Minimum tests:
 - banned authoritative phrases are absent
 - future runtime corpus import rejects missing provenance
 - export/import roundtrip preserves selected path data
+
+## 11. Release Criteria For v0.3
+
+v0.3 is ready only when:
+
+- the v0.2 Greek and Latin lookup behavior still passes.
+- the local app exposes the seed corpus and path explorer.
+- original-language tokens in corpus entries can be queried through the evidence drawer.
+- local matched-pair entries require provenance before validation succeeds.
+- corpus export/import preserves `selected_paths`.
+- the static demo loads `docs/corpus/v0.3-seed.json` and no longer describes v0.3 as planning-only.
+- all tests pass.
+- README documents v0.3 behavior and real testing outcomes.

@@ -15,9 +15,66 @@ const languageMode = document.querySelector("#language-mode");
 const processedText = document.querySelector("#processed-text");
 const treeRoot = document.querySelector("#tree-root");
 const queryState = document.querySelector("#query-state");
+const deskTab = document.querySelector("#desk-tab");
+const corpusTab = document.querySelector("#corpus-tab");
+const readingDesk = document.querySelector("#reading-desk");
+const corpusExplorer = document.querySelector("#corpus-explorer");
+const corpusSelect = document.querySelector("#corpus-select");
+const loadCorpusEntry = document.querySelector("#load-corpus-entry");
+const corpusFocus = document.querySelector("#corpus-focus");
+const corpusList = document.querySelector("#corpus-list");
+const corpusState = document.querySelector("#corpus-state");
+const corpusJson = document.querySelector("#corpus-json");
+const localEntryForm = document.querySelector("#local-entry-form");
+const exportLocalCorpus = document.querySelector("#export-local-corpus");
+const importLocalCorpus = document.querySelector("#import-local-corpus");
+
+const LOCAL_ENTRIES_KEY = "ancient-unfiltered-v03-local-entries";
+const PATH_SELECTIONS_KEY = "ancient-unfiltered-v03-path-selections";
+
+let seedCorpusEntries = [];
+let localCorpusEntries = readJsonStorage(LOCAL_ENTRIES_KEY, []);
+let corpusEntries = [];
+let pathSelections = readJsonStorage(PATH_SELECTIONS_KEY, {});
+let activeCorpusEntry = null;
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[char]);
+}
+
+function readJsonStorage(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJsonStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
 
 function tokenize(text) {
   return text.match(/\p{L}+|[^\p{L}]+/gu) || [];
+}
+
+function setMode(mode, updateHash = true) {
+  const corpusMode = mode === "corpus";
+  deskTab.classList.toggle("is-active", !corpusMode);
+  corpusTab.classList.toggle("is-active", corpusMode);
+  deskTab.setAttribute("aria-selected", String(!corpusMode));
+  corpusTab.setAttribute("aria-selected", String(corpusMode));
+  readingDesk.hidden = corpusMode;
+  corpusExplorer.hidden = !corpusMode;
+  if (updateHash) history.replaceState(null, "", corpusMode ? "#corpus" : "#desk");
+  if (corpusMode && !corpusEntries.length) loadCorpus();
 }
 
 function processText() {
@@ -42,7 +99,7 @@ function normalizeToken(token) {
   return token.normalize("NFC").replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "").toLocaleLowerCase();
 }
 
-async function queryWord(target) {
+async function queryWord(target, overrides = {}) {
   const word = normalizeToken(target.textContent);
   if (!word) return;
 
@@ -56,11 +113,12 @@ async function queryWord(target) {
 
   const params = new URLSearchParams({
     word,
-    year: cutoffYear.value || "-399",
-    language: languageMode.value || "auto",
-    context: sentenceAround(target),
-    token_index: target.dataset.tokenIndex || "0",
+    year: String(overrides.year ?? cutoffYear.value ?? "-399"),
+    language: overrides.language ?? languageMode.value ?? "auto",
+    context: overrides.context ?? sentenceAround(target),
+    token_index: String(overrides.tokenIndex ?? target.dataset.tokenIndex ?? "0"),
   });
+
   try {
     const response = await fetch(`/api/query?${params.toString()}`);
     if (!response.ok) {
@@ -220,6 +278,206 @@ function sentenceAround(target) {
   return fullText.slice(start, end).trim();
 }
 
+async function loadCorpus() {
+  try {
+    const response = await fetch("/api/corpus/seed");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const corpus = await response.json();
+    seedCorpusEntries = corpus.entries || [];
+    refreshCorpus();
+    corpusState.textContent = `Loaded ${seedCorpusEntries.length} seed entries and ${localCorpusEntries.length} local entries.`;
+  } catch (error) {
+    corpusFocus.innerHTML = `<p class="error-state">Corpus failed to load: ${escapeHtml(error.message)}</p>`;
+    corpusState.textContent = "Corpus load failed.";
+  }
+}
+
+function refreshCorpus() {
+  corpusEntries = [...seedCorpusEntries, ...localCorpusEntries];
+  renderCorpusSelect();
+  renderCorpusList();
+  if (!activeCorpusEntry && corpusEntries.length) activeCorpusEntry = corpusEntries[0];
+  if (activeCorpusEntry) renderCorpusFocus(activeCorpusEntry);
+}
+
+function renderCorpusSelect() {
+  corpusSelect.innerHTML = corpusEntries.map((entry) => `
+    <option value="${escapeHtml(entry.id)}">${escapeHtml(entry.theme)} - ${escapeHtml(entry.author)}, ${escapeHtml(entry.work)} ${escapeHtml(entry.citation)}</option>
+  `).join("");
+  if (activeCorpusEntry) corpusSelect.value = activeCorpusEntry.id;
+}
+
+function renderCorpusList() {
+  corpusList.innerHTML = corpusEntries.map((entry) => `
+    <button class="corpus-card" type="button" data-entry="${escapeHtml(entry.id)}">
+      <span>${escapeHtml(entry.theme)}</span>
+      <strong>${escapeHtml(entry.current_english)}</strong>
+      <small>${escapeHtml(entry.author)}, ${escapeHtml(entry.work)} ${escapeHtml(entry.citation)}</small>
+    </button>
+  `).join("");
+}
+
+function selectCorpusEntry(entryId) {
+  const entry = corpusEntries.find((candidate) => candidate.id === entryId);
+  if (!entry) return;
+  activeCorpusEntry = entry;
+  corpusSelect.value = entry.id;
+  renderCorpusFocus(entry);
+}
+
+function entryLanguage(entry) {
+  return entry.critical_original?.language === "lat" ? "latin" : "greek";
+}
+
+function renderCorpusOriginal(entry) {
+  return tokenize(entry.critical_original?.text || "").map((token, index) => {
+    if (/^\p{L}+$/u.test(token)) {
+      return `<button class="inline-token interactive-word" type="button" data-token-index="${index}">${escapeHtml(token)}</button>`;
+    }
+    return escapeHtml(token);
+  }).join("");
+}
+
+function renderPathOptions(entry) {
+  const selected = pathSelections[entry.id] || entry.selected_paths || {};
+  return (entry.path_options || []).map((path, pathIndex) => {
+    const token = path.token || `path-${pathIndex}`;
+    const checkedValue = selected[token] || path.options?.[0] || "";
+    const options = (path.options || []).map((option) => `
+      <label class="path-choice">
+        <input
+          type="radio"
+          name="${escapeHtml(entry.id)}-${pathIndex}"
+          value="${escapeHtml(option)}"
+          data-token="${escapeHtml(token)}"
+          ${option === checkedValue ? "checked" : ""}
+        >
+        <span>${escapeHtml(option)}</span>
+      </label>
+    `).join("");
+
+    return `
+      <fieldset class="path-field">
+        <legend><span lang="grc">${escapeHtml(token)}</span> <small>${escapeHtml(path.lemma || "lemma unlisted")}</small></legend>
+        ${options}
+      </fieldset>
+    `;
+  }).join("");
+}
+
+function renderCorpusFocus(entry) {
+  const source = entry.critical_original || {};
+  corpusFocus.innerHTML = `
+    <div class="pair-meta">
+      <span>${escapeHtml(entry.theme)}</span>
+      <span>${escapeHtml(entry.author)}</span>
+      <span>${escapeHtml(entry.work)} ${escapeHtml(entry.citation)}</span>
+      <span>${Math.abs(entry.approximate_year || 0)} ${(entry.approximate_year || 0) < 0 ? "BCE" : "CE"} estimated</span>
+    </div>
+    <section>
+      <h2>Current English reception</h2>
+      <p class="current-english">${escapeHtml(entry.current_english)}</p>
+    </section>
+    <section>
+      <h2>Cited original-language wording</h2>
+      <blockquote class="corpus-original" lang="${escapeHtml(source.language || "grc")}">${renderCorpusOriginal(entry)}</blockquote>
+      <p class="source-note">${escapeHtml(source.source_label || "source label missing")}. <a href="${escapeHtml(source.source_url || "#")}">Source</a></p>
+    </section>
+    <section>
+      <h2>Token-level branch choices</h2>
+      <div class="path-grid">${renderPathOptions(entry)}</div>
+    </section>
+    <section class="translation-preview">
+      <h2>Selected-path translation preview</h2>
+      <p class="path-summary"></p>
+      <p class="selected-output">${escapeHtml(entry.example_selected_output)}</p>
+    </section>
+    <section>
+      <h2>Equal-weight alternative renderings</h2>
+      <ol class="renderings">
+        ${(entry.alternative_translations || []).map((translation) => `<li>${escapeHtml(translation)}</li>`).join("")}
+      </ol>
+    </section>
+  `;
+  bindCorpusFocus(entry);
+}
+
+function bindCorpusFocus(entry) {
+  const updateSummary = () => {
+    const selected = {};
+    corpusFocus.querySelectorAll(".path-field input:checked").forEach((input) => {
+      selected[input.dataset.token] = input.value;
+    });
+    pathSelections[entry.id] = selected;
+    writeJsonStorage(PATH_SELECTIONS_KEY, pathSelections);
+    const summary = Object.entries(selected).map(([token, option]) => `${token}: ${option}`).join(" | ");
+    corpusFocus.querySelector(".path-summary").textContent = summary || "No path selected.";
+  };
+
+  corpusFocus.querySelectorAll(".path-field input").forEach((input) => {
+    input.addEventListener("change", updateSummary);
+  });
+  updateSummary();
+}
+
+function parsePathOptions(raw) {
+  return raw.split("\n").map((line) => line.trim()).filter(Boolean).map((line) => {
+    const [token, lemma, optionsText] = line.split("|").map((part) => part.trim());
+    return {
+      token,
+      lemma,
+      options: (optionsText || "").split(";").map((option) => option.trim()).filter(Boolean),
+    };
+  });
+}
+
+function localEntryFromForm(formElement) {
+  const data = new FormData(formElement);
+  const alternatives = String(data.get("alternative_translations") || "").split("\n").map((line) => line.trim()).filter(Boolean);
+  const pathOptions = parsePathOptions(String(data.get("path_options") || ""));
+  return {
+    id: String(data.get("id") || "").trim(),
+    theme: String(data.get("theme") || "").trim(),
+    author: String(data.get("author") || "").trim(),
+    work: String(data.get("work") || "").trim(),
+    citation: String(data.get("citation") || "").trim(),
+    approximate_year: Number(data.get("approximate_year") || 0),
+    current_english: String(data.get("current_english") || "").trim(),
+    critical_original: {
+      language: "grc",
+      text: String(data.get("original_text") || "").trim(),
+      source_label: String(data.get("source_label") || "").trim(),
+      source_url: String(data.get("source_url") || "").trim(),
+      confidence: "user-proposed",
+    },
+    path_options: pathOptions,
+    alternative_translations: alternatives,
+    example_selected_output: alternatives[0] || "Alternative rendering not supplied.",
+    selected_paths: Object.fromEntries(pathOptions.map((path) => [path.token, path.options[0] || ""])),
+  };
+}
+
+async function validateEntry(entry) {
+  const response = await fetch("/api/corpus/validate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entry),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(Array.isArray(data.detail) ? data.detail.join("; ") : `HTTP ${response.status}`);
+  }
+  return data.entry;
+}
+
+function mergeLocalEntries(entries) {
+  const byId = new Map(localCorpusEntries.map((entry) => [entry.id, entry]));
+  entries.forEach((entry) => byId.set(entry.id, entry));
+  localCorpusEntries = [...byId.values()];
+  writeJsonStorage(LOCAL_ENTRIES_KEY, localCorpusEntries);
+  refreshCorpus();
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   processText();
@@ -238,4 +496,85 @@ processedText.addEventListener("keydown", (event) => {
   }
 });
 
+deskTab.addEventListener("click", () => setMode("desk"));
+corpusTab.addEventListener("click", () => setMode("corpus"));
+window.addEventListener("hashchange", () => {
+  setMode(location.hash === "#corpus" ? "corpus" : "desk", false);
+});
+
+corpusSelect.addEventListener("change", () => selectCorpusEntry(corpusSelect.value));
+loadCorpusEntry.addEventListener("click", () => selectCorpusEntry(corpusSelect.value));
+
+corpusList.addEventListener("click", (event) => {
+  const card = event.target.closest(".corpus-card");
+  if (!card) return;
+  selectCorpusEntry(card.dataset.entry);
+  corpusFocus.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+corpusFocus.addEventListener("click", (event) => {
+  if (!event.target.classList.contains("inline-token") || !activeCorpusEntry) return;
+  queryWord(event.target, {
+    year: activeCorpusEntry.approximate_year || cutoffYear.value || "-399",
+    language: entryLanguage(activeCorpusEntry),
+    context: activeCorpusEntry.critical_original?.text || "",
+    tokenIndex: event.target.dataset.tokenIndex || "0",
+  });
+});
+
+localEntryForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  try {
+    const entry = await validateEntry(localEntryFromForm(localEntryForm));
+    mergeLocalEntries([entry]);
+    activeCorpusEntry = entry;
+    corpusState.textContent = `Added local entry ${entry.id}. Export it before clearing browser storage.`;
+    localEntryForm.reset();
+  } catch (error) {
+    corpusState.textContent = `Local entry rejected: ${error.message}`;
+  }
+});
+
+exportLocalCorpus.addEventListener("click", async () => {
+  try {
+    const entries = localCorpusEntries.map((entry) => ({
+      ...entry,
+      selected_paths: pathSelections[entry.id] || entry.selected_paths || {},
+    }));
+    const response = await fetch("/api/corpus/export", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: "browser-local", entries }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(Array.isArray(data.detail) ? data.detail.join("; ") : `HTTP ${response.status}`);
+    }
+    corpusJson.value = JSON.stringify(data, null, 2);
+    corpusState.textContent = `Exported ${entries.length} local entries as a v0.3 evidence proposal.`;
+  } catch (error) {
+    corpusState.textContent = `Export failed: ${error.message}`;
+  }
+});
+
+importLocalCorpus.addEventListener("click", async () => {
+  try {
+    const patch = JSON.parse(corpusJson.value);
+    const response = await fetch("/api/corpus/import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(Array.isArray(data.detail) ? data.detail.join("; ") : `HTTP ${response.status}`);
+    }
+    mergeLocalEntries(data.entries || []);
+    corpusState.textContent = `Imported ${data.entries.length} validated evidence proposals.`;
+  } catch (error) {
+    corpusState.textContent = `Import failed: ${error.message}`;
+  }
+});
+
 processText();
+setMode(location.hash === "#corpus" ? "corpus" : "desk", false);

@@ -1,8 +1,8 @@
 {
-  "version": "v0.3-plan-seed",
+  "version": "v0.3",
   "language_scope": ["grc"],
   "created": "2026-05-05",
-  "description": "Initial matched-pair corpus for the v0.3 planning demo. Each entry pairs a familiar English reception with cited Greek wording and multiple grammar-respecting English paths.",
+  "description": "Initial matched-pair corpus for the v0.3 demo. Each entry pairs a familiar English reception with cited Greek wording and multiple grammar-respecting English paths.",
   "policy": [
     "The current English is a reception anchor, not an authority.",
     "The Greek wording is cited source text, not a final recovered original.",

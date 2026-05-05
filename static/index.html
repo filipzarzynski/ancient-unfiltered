@@ -21,7 +21,7 @@ version.
         <header class="topbar">
           <div>
             <h1>Ancient Unfiltered</h1>
-            <p>Local diachronic philology engine</p>
+            <p>v0.3 evidence desk and corpus explorer</p>
           </div>
           <form class="controls" id="process-form">
             <label for="language-mode">Language</label>
@@ -38,11 +38,73 @@ version.
           </form>
         </header>
 
-        <label class="input-label" for="source-text">Source text</label>
-        <textarea id="source-text" spellcheck="false">Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα.</textarea>
+        <nav class="mode-tabs" aria-label="Workspace mode">
+          <button id="desk-tab" class="mode-tab is-active" type="button" aria-controls="reading-desk" aria-selected="true">Reading desk</button>
+          <button id="corpus-tab" class="mode-tab" type="button" aria-controls="corpus-explorer" aria-selected="false">Corpus explorer</button>
+        </nav>
 
-        <section class="text-output" aria-label="Processed text">
-          <div id="processed-text" class="processed-text"></div>
+        <section id="reading-desk" class="mode-panel">
+          <label class="input-label" for="source-text">Source text</label>
+          <textarea id="source-text" spellcheck="false">Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι,
+πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα.</textarea>
+
+          <section class="text-output" aria-label="Processed text">
+            <div id="processed-text" class="processed-text"></div>
+          </section>
+        </section>
+
+        <section id="corpus-explorer" class="mode-panel corpus-explorer" hidden>
+          <div class="corpus-bar">
+            <label for="corpus-select">Matched pair</label>
+            <select id="corpus-select"></select>
+            <button id="load-corpus-entry" type="button">Load</button>
+          </div>
+
+          <article id="corpus-focus" class="corpus-focus" aria-live="polite">
+            <p class="empty-state">Loading v0.3 seed corpus...</p>
+          </article>
+
+          <details class="local-entry">
+            <summary>Add a local matched pair</summary>
+            <form id="local-entry-form" class="local-entry-form">
+              <label for="local-id">Stable id</label>
+              <input id="local-id" name="id" required pattern="[a-z0-9][a-z0-9_.-]{2,80}" placeholder="diogenes-laertius-6-22">
+              <label for="local-theme">Theme</label>
+              <input id="local-theme" name="theme" required placeholder="community">
+              <label for="local-author">Author</label>
+              <input id="local-author" name="author" required placeholder="Diogenes Laertius">
+              <label for="local-work">Work</label>
+              <input id="local-work" name="work" required placeholder="Lives of Eminent Philosophers">
+              <label for="local-citation">Citation</label>
+              <input id="local-citation" name="citation" required placeholder="6.22">
+              <label for="local-year">Approximate ancient year</label>
+              <input id="local-year" name="approximate_year" type="number" value="250" min="-3000" max="2100">
+              <label for="local-english">Current English reception</label>
+              <textarea id="local-english" name="current_english" required></textarea>
+              <label for="local-original">Cited original-language wording</label>
+              <textarea id="local-original" name="original_text" required></textarea>
+              <label for="local-source-label">Source label</label>
+              <input id="local-source-label" name="source_label" required placeholder="Perseus Digital Library, edition label">
+              <label for="local-source-url">Source URL</label>
+              <input id="local-source-url" name="source_url" type="url" required placeholder="https://...">
+              <label for="local-paths">Path options, one per line: token | lemma | option A ; option B</label>
+              <textarea id="local-paths" name="path_options" required></textarea>
+              <label for="local-translations">Alternative renderings, one per line</label>
+              <textarea id="local-translations" name="alternative_translations" required></textarea>
+              <button type="submit">Add locally</button>
+            </form>
+          </details>
+
+          <section class="corpus-tools" aria-label="Corpus import and export">
+            <div>
+              <button id="export-local-corpus" type="button">Export local JSON</button>
+              <button id="import-local-corpus" type="button">Import JSON</button>
+            </div>
+            <textarea id="corpus-json" aria-label="Corpus JSON import and export buffer" spellcheck="false"></textarea>
+            <p id="corpus-state" class="empty-state">Seed entries are read-only. Local entries remain in this browser until exported.</p>
+          </section>
+
+          <div id="corpus-list" class="corpus-list" aria-label="All matched pairs"></div>
         </section>
       </section>
 

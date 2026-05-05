@@ -1,16 +1,16 @@
 # agents.md: Ancient Unfiltered Autonomous Execution Plan
 
 **Project:** Ancient Unfiltered
-**Release target:** v0.3 planning
+**Release target:** v0.3
 **Reference document:** `spec.md`
 
 ## 1. Primary Directive
 
-You are the lead autonomous developer for Ancient Unfiltered v0.2. Read `spec.md` first, then execute the plan in this file.
+You are the lead autonomous developer for Ancient Unfiltered v0.3. Read `spec.md` first, then execute the plan in this file.
 
 The task is not to make the app smarter than the sources. The task is to make the sources easier to inspect.
 
-The current baseline is v0.2. v0.3 planning must add a matched-pair corpus and path explorer while preserving the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
+The current baseline is v0.3. The release adds a matched-pair corpus and path explorer while preserving the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
 
 `spec.md` is the single source of truth for the project scaffold. `agents.md` is only the execution procedure, and `mempalace.md` is only a memory index. If this file conflicts with `spec.md`, fix this file.
 
@@ -21,7 +21,7 @@ The current baseline is v0.2. v0.3 planning must add a matched-pair corpus and p
 3. **No hidden provenance:** Every data item needs a source label or an explicit warning.
 4. **No preferred branch:** Morphological paths, senses, translations, and source variants must have equal visual weight.
 5. **Chronological filter remains core:** Drop securely future evidence after the cutoff. Keep uncertain evidence only when marked unverified.
-6. **Greek is first-class in v0.2:** Greek support must be designed beside Latin, not patched around it.
+6. **Greek remains first-class:** Greek support must be designed beside Latin, not patched around it.
 7. **Accessible by default:** Keyboard, screen reader, contrast, responsive layout, and reduced-motion concerns are product requirements.
 8. **Local execution only:** FastAPI, Uvicorn, SQLite, vanilla HTML/CSS/JS.
 9. **No frontend build system:** Do not add Node, npm, React, bundlers, or package managers for the frontend.
@@ -61,7 +61,7 @@ Instructions:
 1. Run `git status --short --branch`.
 2. Read `mempalace.md`, `README.md`, `spec.md`, `agents.md`, `main.py`, `philology.py`, `static/script.js`, and `tests/test_chronology.py`.
 3. Run the existing test suite.
-4. Confirm the v0.1 Caesar/Gallia behavior still works before beginning v0.2 changes.
+4. Confirm the v0.1 Caesar/Gallia behavior still works before beginning release changes.
 5. Do not refactor unrelated code during this phase.
 
 Exit criteria:
@@ -86,7 +86,7 @@ Rules:
 
 - Prefer source APIs and structured data over scraping.
 - If scraping is necessary, isolate it in a source client and test parser behavior.
-- Do not add an endpoint that requires API keys for v0.2.
+- Do not add an endpoint that requires API keys.
 
 Exit criteria:
 
@@ -222,7 +222,7 @@ Exit criteria:
 ### Phase 8: Documentation And Examples Agent
 
 **Persona:** Honest product documentarian
-**Objective:** Make the README tell users exactly what v0.2 gives them before they run it.
+**Objective:** Make the README tell users exactly what v0.3 gives them before they run it.
 
 Instructions:
 
@@ -262,7 +262,7 @@ Exit criteria:
 ### Phase 9: Release Verification Agent
 
 **Persona:** Release engineer
-**Objective:** Publish v0.2 only after a careful review.
+**Objective:** Publish v0.3 only after a careful review.
 
 Checklist:
 
@@ -272,24 +272,33 @@ Checklist:
 - [ ] No UI language suggests a correct interpretation.
 - [ ] Greek smoke test documented.
 - [ ] Latin v0.1 regression documented.
+- [ ] Corpus seed, validation, import, and export behavior documented.
 - [ ] Unit tests pass.
 - [ ] App runs locally with `pip install -r requirements.txt && uvicorn main:app --reload`.
-- [ ] README documents v0.2 honestly.
+- [ ] README documents v0.3 honestly.
 
 Release steps:
 
 1. Inspect `git status --short --branch`.
 2. Review the diff.
 3. Run tests.
-4. Commit with a clear v0.2 message.
+4. Commit with a clear v0.3 message.
 5. Push the branch.
-6. Tag `v0.2`.
+6. Tag the release.
 7. Push the tag.
 8. Create a GitHub release only if authenticated tooling is available.
 
-## 4. Recommended v0.2 Smoke Work
+## 4. Recommended v0.3 Smoke Work
 
-Use one Greek work and one Latin regression work.
+Use one corpus workflow, one Greek lookup, and one Latin regression work.
+
+Corpus workflow:
+
+- Load `/api/corpus/seed`.
+- Open the corpus explorer.
+- Confirm path choices render for a seed entry.
+- Validate that an import without source provenance is rejected.
+- Confirm export/import preserves selected paths.
 
 Greek candidate:
 
@@ -323,7 +332,7 @@ Avoid:
 - `Authoritative answer`
 - `Best meaning`
 
-## 6. v0.3 Matched-Pair Corpus Plan
+## 6. v0.3 Matched-Pair Corpus Release
 
 ### Phase A: Corpus Contract Agent
 
@@ -333,7 +342,7 @@ Avoid:
 Instructions:
 
 1. Read `spec.md` section 10.
-2. Treat `docs/corpus/v0.3-seed.json` as the public seed corpus for the planning demo.
+2. Treat `docs/corpus/v0.3-seed.json` as the public seed corpus for the release demo and local app.
 3. Add schema-like tests before expanding the corpus.
 4. Require source provenance for every English and original-language pair.
 5. Keep ancient source text as evidence, not project governance.
@@ -367,12 +376,12 @@ Exit criteria:
 ### Phase C: Local Corpus Authoring Agent
 
 **Persona:** Local-first product engineer
-**Objective:** Plan the runtime feature that lets users fill and export their own corpus entries.
+**Objective:** Maintain the runtime feature that lets users fill and export their own corpus entries.
 
 Instructions:
 
 1. Add local create/edit forms only after the corpus contract is stable.
-2. Store user entries locally in SQLite.
+2. Store user entries locally in browser storage until exported.
 3. Query public source databases for original-language tokens.
 4. Persist selected paths and warning states.
 5. Export corpus patches as JSON.

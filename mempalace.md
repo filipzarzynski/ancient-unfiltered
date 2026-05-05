@@ -26,8 +26,8 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 | `AGENTS` | `agents.md` | execution protocol derived from the spec |
 | `USERDOCS` | `README.md` | shipped user-facing promise |
 | `PUBLICDEMO` | `docs/` | static GitHub Pages demo |
-| `CORPUS` | `docs/corpus/v0.3-seed.json`, `tests/test_v03_corpus_seed.py` | v0.3 matched-pair seed corpus |
-| `RUNTIME` | `main.py`, `database.py`, `philology.py`, `static/` | current app behavior |
+| `CORPUS` | `corpus.py`, `docs/corpus/v0.3-seed.json`, `tests/test_v03_corpus_seed.py` | v0.3 matched-pair corpus contract |
+| `RUNTIME` | `main.py`, `corpus.py`, `database.py`, `philology.py`, `static/` | current app behavior |
 | `CHRONO` | `sources/chronology.py`, `tests/` | cutoff and date-estimate behavior |
 | `EVIDENCE` | `examples/`, future fixtures | source inputs and captured source shapes |
 | `VERIFY` | `tests/`, `README.md` | repeatable checks and documented outcomes |
@@ -37,7 +37,7 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 ### 1. North Door: Product Truth
 
 - Canonical file: `spec.md`
-- Use for: v0.2 goals, non-interpretive philosophy, Greek-first expansion, UI requirements, data model, accessibility, release criteria.
+- Use for: v0.3 goals, non-interpretive philosophy, Greek and Latin evidence lookup, matched-pair corpus behavior, UI requirements, data model, accessibility, release criteria.
 - Rule: new product requirements must be added here first.
 
 ### 2. East Desk: Agentic Execution
@@ -50,7 +50,7 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 
 - Canonical file: `README.md`
 - Use for: what users get today, installation, examples, known limitations, validation outcomes.
-- Rule: README describes shipped behavior. It should not promise v0.2 behavior before that behavior exists.
+- Rule: README describes shipped behavior. It should not promise behavior before that behavior exists.
 
 ### 3A. Public Atrium: GitHub Pages Demo
 
@@ -61,13 +61,14 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 ### 3B. Corpus Table: v0.3 Matched Pairs
 
 - Canonical seed file: `docs/corpus/v0.3-seed.json`
+- Runtime contract: `corpus.py`
 - Tests: `tests/test_v03_corpus_seed.py`
 - Use for: English/current reception paired with cited original wording, path options, and example alternative outputs.
 - Rule: corpus entries are evidence proposals with provenance. They are not interpretations blessed by the project.
 
 ### 4. West Cabinet: Running System
 
-- Canonical files: `main.py`, `database.py`, `philology.py`, `sources/`, `static/`
+- Canonical files: `main.py`, `corpus.py`, `database.py`, `philology.py`, `sources/`, `static/`
 - Use for: local FastAPI app, cache, source parsing, frontend reading desk.
 - Rule: implementation follows `spec.md`; when implementation diverges, either fix code or update `spec.md` deliberately.
 

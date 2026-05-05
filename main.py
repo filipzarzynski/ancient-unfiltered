@@ -12,25 +12,35 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Body, FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from corpus import (
+    CorpusValidationError,
+    build_export,
+    corpus_summary,
+    import_corpus_patch,
+    load_seed_corpus,
+    validate_entry,
+)
 from database import get_cached_query, init_db, set_cached_query
 from philology import build_response, normalize_word
 
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+DOCS_DIR = BASE_DIR / "docs"
 
 app = FastAPI(
     title="Ancient Unfiltered",
-    version="0.2.0",
-    description="Local-first ancient language lookup with source provenance and chronological lexical filtering.",
+    version="0.3.0",
+    description="Local-first ancient language lookup and matched-pair corpus explorer.",
 )
 
 init_db()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/demo", StaticFiles(directory=DOCS_DIR, html=True), name="demo")
 
 
 @app.get("/", include_in_schema=False)
@@ -59,3 +69,38 @@ async def query(
     cached_response = {**response, "local_context": {"sentence": "", "token_index": None}}
     set_cached_query(normalized, year, cached_response, language)
     return response
+
+
+@app.get("/api/corpus/seed")
+async def seed_corpus() -> dict:
+    corpus = load_seed_corpus()
+    return {**corpus, "summary": corpus_summary(corpus)}
+
+
+@app.post("/api/corpus/validate")
+async def validate_corpus_entry(entry: dict = Body(...)) -> dict:
+    try:
+        validate_entry(entry)
+    except CorpusValidationError as exc:
+        raise HTTPException(status_code=422, detail=exc.errors) from exc
+    return {"status": "valid evidence proposal", "entry": entry}
+
+
+@app.post("/api/corpus/export")
+async def export_corpus_patch(payload: dict = Body(...)) -> dict:
+    entries = payload.get("entries")
+    if not isinstance(entries, list):
+        raise HTTPException(status_code=422, detail=["entries must be a list"])
+    source = payload.get("source", "local-browser")
+    try:
+        return build_export(entries, str(source))
+    except CorpusValidationError as exc:
+        raise HTTPException(status_code=422, detail=exc.errors) from exc
+
+
+@app.post("/api/corpus/import")
+async def import_corpus(payload: dict = Body(...)) -> dict:
+    try:
+        return import_corpus_patch(payload)
+    except CorpusValidationError as exc:
+        raise HTTPException(status_code=422, detail=exc.errors) from exc
