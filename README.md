@@ -98,6 +98,7 @@ Validation performed for v0.1 on 2026-05-05:
 |-- main.py                # FastAPI app and /api/query route
 |-- database.py            # SQLite cache
 |-- philology.py           # external fetch, parsing, and chronological filter
+|-- mempalace.md           # project memory index, not a second spec
 |-- requirements.txt
 |-- static/
 |   |-- index.html
@@ -116,6 +117,12 @@ Validation performed for v0.1 on 2026-05-05:
 - Wiktionary parse API for Latin etymology text when available.
 
 All displayed definitions and citations are passed through from external source data. The app adds only structural labels, chronological filtering, and `date unverified` flags.
+
+## Project Memory
+
+The project scaffold uses a strict single source of truth model. [spec.md](spec.md) is the normative source for product and architecture decisions; [agents.md](agents.md) is the execution plan derived from it; [mempalace.md](mempalace.md) is only a navigation index for project memory.
+
+Ancient texts and examples are evidence inputs with their own provenance. They are not used as the project's governance source of truth.
 
 ## License
 

@@ -11,6 +11,22 @@ Ancient Unfiltered is a local, source-first reading desk for ancient texts. v0.2
 
 The product must never imply that there is one correct interpretation of an ancient text. It must show source data, uncertainty, variants, chronological context, and provenance so readers can do their own interpretive work.
 
+## 1.1. Scaffold Single Source Of Truth
+
+`spec.md` is the single source of truth for the Ancient Unfiltered project scaffold: product goals, architecture, data contracts, UI requirements, accessibility, tests, and release criteria.
+
+Other project files must obey this precedence:
+
+1. `spec.md` defines normative product truth.
+2. `agents.md` defines execution procedure derived from `spec.md`.
+3. code and tests implement and verify the current state.
+4. `README.md` describes shipped user-facing behavior.
+5. `mempalace.md` indexes project memory and never creates requirements.
+
+This SSOT applies to the software scaffold around ancient works. It does not claim authority over ancient texts, editions, translations, or source records. Ancient texts remain evidence artifacts with their own provenance.
+
+Any future agent changing scaffold behavior must update `spec.md` first, then propagate the change outward to execution docs, code, tests, README, and memory indexing as needed.
+
 ## 2. Core Philosophy
 
 ### 2.1. Source-First, Not Authority-First
@@ -130,6 +146,7 @@ v0.2 must preserve the v0.1 local-first architecture.
 |-- main.py                # FastAPI app and routes
 |-- database.py            # SQLite cache
 |-- philology.py           # existing shared parsing/filter logic
+|-- mempalace.md           # index-only project memory map
 |-- sources/               # v0.2 source clients and parsers
 |   |-- morphology.py
 |   |-- lexica.py

@@ -12,6 +12,8 @@ The task is not to make the app smarter than the sources. The task is to make th
 
 v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading experience, and preserve the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
 
+`spec.md` is the single source of truth for the project scaffold. `agents.md` is only the execution procedure, and `mempalace.md` is only a memory index. If this file conflicts with `spec.md`, fix this file.
+
 ## 2. Non-Negotiable Guardrails
 
 1. **No interpretive authority:** The app must never decide what an ancient text really means.
@@ -24,8 +26,28 @@ v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading
 8. **Local execution only:** FastAPI, Uvicorn, SQLite, vanilla HTML/CSS/JS.
 9. **No frontend build system:** Do not add Node, npm, React, bundlers, or package managers for the frontend.
 10. **GPL-3 compliance:** Preserve GPL notices in major files.
+11. **SSOT discipline:** Add or change scaffold requirements only in `spec.md`, then propagate outward.
+12. **Memory palace is an index:** Keep `mempalace.md` navigational. It must not become a second product spec.
 
 ## 3. Execution Phases
+
+### Phase 0: Memory And SSOT Preflight Agent
+
+**Persona:** Systems agentic engineering steward
+**Objective:** Preserve strict single source of truth before implementation.
+
+Instructions:
+
+1. Read `mempalace.md` for navigation.
+2. Read `spec.md` as the normative product source.
+3. Read `agents.md` as execution procedure only.
+4. If `agents.md`, `README.md`, code comments, or memory notes conflict with `spec.md`, update the non-normative file or ask for an intentional `spec.md` change.
+5. Keep ancient source texts and fixtures out of the scaffold SSOT. They are evidence inputs, not project governance.
+
+Exit criteria:
+
+- The intended change has one canonical home in `spec.md`.
+- Supporting files point back to that home instead of duplicating new truth.
 
 ### Phase 1: Baseline Review Agent
 
@@ -35,7 +57,7 @@ v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading
 Instructions:
 
 1. Run `git status --short --branch`.
-2. Read `README.md`, `spec.md`, `agents.md`, `main.py`, `philology.py`, `static/script.js`, and `tests/test_chronology.py`.
+2. Read `mempalace.md`, `README.md`, `spec.md`, `agents.md`, `main.py`, `philology.py`, `static/script.js`, and `tests/test_chronology.py`.
 3. Run the existing test suite.
 4. Confirm the v0.1 Caesar/Gallia behavior still works before beginning v0.2 changes.
 5. Do not refactor unrelated code during this phase.
