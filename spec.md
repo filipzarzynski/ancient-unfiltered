@@ -1,124 +1,367 @@
-# spec.md: Local Diachronic Philology Engine
+# spec.md: Ancient Unfiltered v0.2 Product Specification
 
 ## 1. Project Overview
-**Name:** Local Diachronic Philology Engine  
-**License:** GNU General Public License v3.0 (GPL-3)  
-**Objective:** Build a minimalist, locally-hosted, text-agnostic tool for empirical ancient language study. The application must process user-provided text, allow the user to set a historical "cutoff date," and dynamically fetch morphological, etymological, and temporally-bounded lexical data for any clicked word using external academic APIs.
-**Core Philosophy:** Zero editorializing, zero human curation. The tool presents raw empirical data (ambiguous grammatical paths, etymological roots, and historical usages) bounded strictly by the user's timeline.
 
----
+**Name:** Ancient Unfiltered
+**Release target:** v0.2
+**License:** GNU General Public License v3.0 or later
+**Current baseline:** v0.1 local Latin-first MVP
 
-## 2. System Architecture & Tech Stack
-The application must be a lightweight, easily distributable local web server bundle with no complex build steps (no Node.js/Webpack required for the frontend).
+Ancient Unfiltered is a local, source-first reading desk for ancient texts. v0.2 expands the v0.1 Latin MVP toward Greek works while improving the interface so it feels useful and inviting to philosophy academics, classicists, students, and independent readers.
 
-*   **Backend:** Python 3.10+, FastAPI (for async API handling), Uvicorn (local server).
-*   **Frontend:** Vanilla HTML5, CSS3, and Vanilla JavaScript. (Tailwind CSS via CDN is acceptable for rapid UI styling).
-*   **Database/Caching:** Local SQLite (`cache.db`) accessed via Python's built-in `sqlite3` or `SQLAlchemy`.
-*   **External APIs:** Perseus Digital Library API / Logeion API (for morphology and lexicon) and standard Wiktionary parsers (for etymology).
+The product must never imply that there is one correct interpretation of an ancient text. It must show source data, uncertainty, variants, chronological context, and provenance so readers can do their own interpretive work.
 
-### 2.1. Target File Structure
+## 2. Core Philosophy
+
+### 2.1. Source-First, Not Authority-First
+
+The app is not an oracle and must never present a dictionary, edition, translation, parser, institution, or model as an authority that settles meaning.
+
+Every returned item must expose its provenance:
+
+- source provider or edition
+- retrieved form of the data
+- citation, lemma, or passage anchor used
+- date or date estimate when available
+- confidence level for reconstructed context
+- whether the chronology was verified or unverified
+
+When sources disagree, v0.2 must display disagreement as parallel evidence. It must not collapse disagreement into a single preferred answer.
+
+### 2.2. Ancient Words First
+
+The central object is the ancient wording itself, or the best retrievable estimate of that wording from explicit source data.
+
+For every clicked word, v0.2 should try to show:
+
+- the clicked token in its local sentence
+- possible lemmas and morphology
+- historical meanings available before the cutoff
+- etymology with provenance and chronology where possible
+- citations that support dictionary senses
+- estimated original source sentences behind those citations when retrievable
+- translations as optional context, clearly labeled by translator/source/date
+
+Translations are aids. They must not be displayed as interpretations that decide the ancient meaning.
+
+### 2.3. Chronological Humility
+
+The cutoff year is a research lens, not a truth machine. v0.2 must:
+
+- drop lexical senses or citations that are securely later than the cutoff
+- retain undated material only when it is marked `date unverified`
+- show guessed dates as estimates, not facts
+- keep the raw citation text visible whenever possible
+- avoid paraphrasing definitions into cleaner modern claims
+
+## 3. v0.2 Product Goals
+
+### 3.1. Greek Works As First-Class Inputs
+
+v0.2 must support Greek reading workflows alongside Latin. Greek cannot be treated as an afterthought or a Roman-adjacent feature.
+
+Minimum Greek targets:
+
+- polytonic Greek tokenization and display
+- Greek language mode: `Greek`, `Latin`, and `Auto`
+- Greek morphology through Perseus Morpheus or another open academic endpoint
+- Greek lexicon lookup through LSJ-compatible open data where available
+- Greek etymology retrieval where source data exists
+- examples from at least one Greek philosophical or literary work
+
+Suggested v0.2 smoke text:
+
 ```text
-/diachronic-engine
-├── main.py               # FastAPI server application and API routes
-├── requirements.txt      # Python dependencies (fastapi, uvicorn, httpx, etc.)
-├── database.py           # SQLite caching logic
-├── /static
-│   ├── index.html        # Main UI
-│   ├── style.css         # Styling for the text and directory tree
-│   └── script.js         # Client-side logic (text wrapping, fetch requests, UI state)
-└── README.md             # Setup and run instructions (GPL-3 notice)
+Plato, Apology 17a
+Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων,
+οὐκ οἶδα.
 ```
 
----
+When using real Greek text in examples, preserve Unicode polytonic Greek in the app and tests.
 
-## 3. Core Requirements & Logic Flow
+### 3.2. Source Sentence Estimation
 
-### 3.1. Initialization & UI Setup
-*   **Input Area:** The frontend must provide a `textarea` for the user to paste any text (ancient or translated) and a `number` input field for the **Cutoff Year** (e.g., `-50` for 50 BCE, `150` for 150 CE).
-*   **Render Action:** A "Process Text" button that takes the input string, tokenizes it by whitespace/punctuation, and wraps every word in a clickable HTML `<span>` with a distinct class (e.g., `<span class="interactive-word">rivalem</span>`).
+For dictionary citations such as `Plat. Ap. 17a`, `Hom. Il. 1.1`, or `Arist. Metaph. 980a`, the app should attempt to retrieve the cited passage and extract the sentence or nearest explicit context containing the cited word or lemma.
 
-### 3.2. Query Execution (Frontend -> Backend)
-*   When a user clicks an `.interactive-word`, the JS extracts the inner text, normalizes it (removes punctuation, converts to lowercase), and sends an HTTP GET request to the local backend: `GET /api/query?word={word}&year={cutoff_year}`.
-*   The frontend displays a loading state on the UI side-panel while waiting.
+The UI label must be `Source sentence estimate`, not `Original sentence`, unless the endpoint provides a clearly identified source passage.
 
-### 3.3. Backend Processing & API Orchestration (Python)
-1.  **Cache Check:** Query the local SQLite database for the tuple `(word, cutoff_year)`. If valid JSON exists, return it immediately.
-2.  **Morphology Fetch:** Hit the Perseus/Logeion morphological analyzer endpoint to retrieve all possible lemmas and grammatical parsings.
-3.  **Lexicon Fetch:** Iterate through the retrieved lemmas and hit the lexicon endpoints (e.g., Lewis & Short for Latin, LSJ for Greek) to retrieve full definitions and citations.
-4.  **Etymology Fetch:** Query available etymology endpoints to extract root words and literal constructions.
-5.  **Chronological Filter (Crucial):** Parse the citation dates from the lexicon payload. **Strictly remove** any sense, definition, or citation that is chronologically dated *after* the `cutoff_year` provided by the user.
-6.  **Data Formatting:** Structure the surviving data into the standardized JSON response format.
-7.  **Cache & Return:** Save the structured JSON to SQLite and return it to the frontend.
+The backend must return:
 
-### 3.4. Target JSON Response Schema
+- canonical citation string
+- source provider
+- retrieved passage text
+- sentence or context window
+- match strategy: exact token, normalized token, lemma match, citation-only context, or failed
+- confidence: high, medium, low, or unavailable
+
+If retrieval fails, the app should show the citation and a clear `source sentence unavailable` state.
+
+### 3.3. Minimal, Appealing, Accessible UI
+
+The v0.2 interface should feel like a quiet research desk rather than a technical demo.
+
+Design direction:
+
+- calm, readable typography with excellent Greek and Latin support
+- restrained color palette with enough contrast for WCAG 2.2 AA
+- no decorative excess, no marketing hero screen, no card-heavy clutter
+- text reading area remains the first screen
+- side panel becomes an evidence drawer with clean tabs or grouped sections
+- preserve collapsible evidence trees, but make them easier to scan
+- keep equal visual weight for competing analyses
+
+Accessibility requirements:
+
+- full keyboard workflow
+- visible focus states
+- semantic HTML landmarks
+- ARIA labels only where native semantics are insufficient
+- screen-reader-friendly loading and error states
+- no information conveyed by color alone
+- responsive layout for phones, tablets, and desktop
+- reduced-motion support
+
+## 4. Architecture
+
+v0.2 must preserve the v0.1 local-first architecture.
+
+```text
+.
+|-- main.py                # FastAPI app and routes
+|-- database.py            # SQLite cache
+|-- philology.py           # existing shared parsing/filter logic
+|-- sources/               # v0.2 source clients and parsers
+|   |-- morphology.py
+|   |-- lexica.py
+|   |-- passages.py
+|   `-- etymology.py
+|-- static/
+|   |-- index.html
+|   |-- style.css
+|   `-- script.js
+|-- tests/
+|-- examples/
+`-- README.md
+```
+
+No frontend build step is allowed. The frontend remains vanilla HTML, CSS, and JavaScript.
+
+The backend remains FastAPI plus Uvicorn. The cache remains local SQLite. New dependencies are allowed only when they remove real parser fragility or are needed for robust Greek handling.
+
+## 5. Data Model
+
+The v0.2 response should extend, not break, the v0.1 shape.
+
 ```json
 {
-  "word": "rivalem",
-  "query_year": -50,
+  "word": "logos",
+  "display_word": "logos",
+  "language": "greek",
+  "query_year": -350,
+  "local_context": {
+    "sentence": "raw user sentence containing the selected token",
+    "token_index": 4
+  },
   "morphology": [
-    {"path": "Path A", "pos": "Noun", "lemma": "rivalis", "details": "Accusative, Singular, Masculine"},
-    {"path": "Path B", "pos": "Adjective", "lemma": "rivalis", "details": "Accusative, Singular"}
+    {
+      "path": "Path A",
+      "lemma": "logos",
+      "pos": "Noun",
+      "details": "nominative singular masculine",
+      "source": "Perseus Morpheus",
+      "confidence": "source-reported"
+    }
   ],
   "etymology": {
-    "root": "rivus",
-    "literal_meaning": "pertaining to the same stream/brook"
+    "items": [
+      {
+        "text": "source-derived etymology text",
+        "source": "Wiktionary or other open source",
+        "date_status": "unverified"
+      }
+    ]
   },
   "lexicon": [
     {
-      "sense": "Sense I: Literal",
-      "definition": "One who uses the same brook or water source.",
-      "citations": ["Ulpian, Digest (Historical anchor)"]
-    },
-    {
-      "sense": "Sense II: Transferred (Social/Economic)",
-      "definition": "A competitor, one who strives for the same objective.",
-      "citations": ["Plautus, Stichus - 200 BCE"]
+      "sense": "source sense label",
+      "definition": "source definition text",
+      "source": "LSJ",
+      "date_status": "verified",
+      "citations": [
+        {
+          "raw": "Plat. Ap. 17a",
+          "estimated_year": -399,
+          "date_status": "estimated",
+          "source_sentence": {
+            "text": "retrieved Greek sentence or context window",
+            "provider": "Perseus or other open text source",
+            "match_strategy": "citation-only context",
+            "confidence": "medium"
+          }
+        }
+      ]
     }
+  ],
+  "translations": [
+    {
+      "text": "source translation excerpt",
+      "source": "translator and edition",
+      "passage": "Plat. Ap. 17a",
+      "role": "context only"
+    }
+  ],
+  "warnings": [
+    "No single branch is selected as correct."
   ]
 }
 ```
 
----
+## 6. Backend Requirements
 
-## 4. UI/UX Specifications: The Empirical Directory Tree
+### 6.1. Language Detection And Routing
 
-The parsed data must be rendered in a side-panel or floating modal using a collapsible **Directory Tree (Accordion)** structure. This prevents information overload and reflects the raw, relational nature of the data.
+The API must accept:
 
-### 4.1. Tree Structure Layout
-*   **Root Node:** `▾ [Selected Word]`
-    *   **Branch 1:** `▾ 1. Morphological Paths`
-        *   `▸ [Path A Data]`
-        *   `▸ [Path B Data]`
-    *   **Branch 2:** `▾ 2. Etymological Topology`
-        *   `▪ Root: [Root Data]`
-        *   `▪ Literal: [Literal Meaning]`
-    *   **Branch 3:** `▾ 3. Chronological Lexicon (pre-[Year])`
-        *   `▾ Sense I: [Definition]`
-            *   `▸ Citations`
-        *   `▾ Sense II: [Definition]`
-            *   `▸ Citations`
+```text
+GET /api/query?word={word}&year={cutoff_year}&language={auto|latin|greek}
+```
 
-### 4.2. Interaction Rules
-*   Branches must be individually collapsible/expandable via vanilla JavaScript.
-*   The software must **never** highlight one morphological path or lexical sense as the "correct" one. All branches hold equal visual weight.
+Routing rules:
 
----
+- `latin` uses the existing Latin pipeline.
+- `greek` uses the Greek pipeline.
+- `auto` detects Unicode script first, then falls back to the selected UI language.
+- mixed or ambiguous tokens must return a warning rather than a guessed certainty.
 
-## 5. Implementation Phases for AI Agent
+### 6.2. Greek Morphology
 
-*   **Phase 1: Local Server & Caching Boilerplate**
-    *   Create `main.py` with FastAPI.
-    *   Implement SQLite setup and basic `/api/query` route (returning dummy data).
-    *   Create `static/index.html` and wire up the FastAPI static file serving.
-*   **Phase 2: Frontend Text Processing**
-    *   Implement JS to take text input, tokenize it, wrap words in spans, and render them to the DOM.
-    *   Add click event listeners to words that trigger a `fetch()` to the local API.
-*   **Phase 3: External API Integration**
-    *   Implement HTTPX client in Python to fetch from Perseus/Logeion APIs based on the incoming word.
-    *   Implement XML/JSON parsing to extract Morphology and Lexicon data.
-*   **Phase 4: The Chronological Filter**
-    *   Write the logic to parse historical dates/authors from the lexicon data.
-    *   Implement the comparison logic against `cutoff_year` to drop future definitions.
-*   **Phase 5: UI Construction**
-    *   Write the JS logic to dynamically build the DOM elements for the Collapsible Directory Tree based on the JSON response.
-    *   Apply minimalist, academic CSS styling.
+Implement Greek morphology as a separate source client. Preserve all returned analyses. Do not pick a preferred parse.
+
+Required parser behavior:
+
+- handle polytonic Unicode
+- normalize for lookup without losing display form
+- retain source lemma, part of speech, and inflection details
+- deduplicate exact duplicates only
+- expose endpoint failures as source warnings
+
+### 6.3. Greek Lexicon
+
+Implement LSJ-compatible lookup where open data is available. The parser must keep raw sense labels, definitions, and citations.
+
+Chronological filtering must apply to Greek authors and works, including approximate mappings for Homer, Hesiod, Herodotus, Thucydides, Plato, Xenophon, Aristotle, the tragedians, and Hellenistic sources.
+
+All mappings are estimates and must be labeled as such.
+
+### 6.4. Source Sentence Retrieval
+
+Create a passage retrieval layer that can parse common citations and try candidate open-text endpoints.
+
+The retrieval layer must:
+
+- never fabricate a passage
+- return no passage when none is retrieved
+- keep provider and citation metadata
+- show match confidence
+- support context windows when sentence splitting is uncertain
+- preserve ancient-language text as returned by the source
+
+### 6.5. Translations
+
+Translations may be shown only as sourced context.
+
+The UI must label translation blocks as:
+
+```text
+Translation context, not interpretation
+```
+
+Lexical meanings and etymologies must obey the ancient cutoff. Translation context must be tied to the same ancient passage or citation, and translation edition dates must be shown when available. If translation metadata is missing, mark `translation date unverified`.
+
+## 7. Frontend Requirements
+
+### 7.1. Reading Desk Layout
+
+First viewport:
+
+- source text input or reading pane
+- compact language and cutoff controls
+- process action
+- evidence drawer
+
+Evidence drawer sections:
+
+- Word
+- Morphology
+- Lexicon by cutoff
+- Source sentence estimates
+- Etymology
+- Translation context
+- Source warnings
+
+The UI must avoid ranking words, senses, translations, or analyses.
+
+### 7.2. Accessibility
+
+Required manual checks:
+
+- tab through the full app without a mouse
+- activate a token with Enter and Space
+- use the app at 320px width
+- use the app at 200% browser zoom
+- verify focus indicators
+- verify loading state is announced or visible text changes
+- verify color contrast for text and controls
+
+## 8. Testing Plan
+
+### 8.1. Unit Tests
+
+Add tests for:
+
+- Greek tokenization
+- Unicode normalization
+- language detection
+- Greek author date estimation
+- chronology filtering for Greek citations
+- source sentence retrieval fallback behavior
+- equal-weight rendering data structures
+
+### 8.2. Smoke Tests
+
+Run one Greek work and one Latin work.
+
+Required Greek smoke test:
+
+- one chapter, section, or short passage from Plato, Homer, Aristotle, or another ancient Greek work
+- at least one clicked Greek word
+- cutoff set before and after a major cited author to verify filtering
+- source sentence estimation documented in README
+
+Required Latin regression smoke test:
+
+- repeat the v0.1 Caesar `Gallia` example
+- confirm Latin behavior still works
+
+### 8.3. UI Tests
+
+At minimum:
+
+- desktop screenshot review
+- mobile screenshot review
+- keyboard-only lookup flow
+- no overlapping text at narrow widths
+- no frontend dependency or build tool introduced
+
+## 9. Release Criteria For v0.2
+
+v0.2 is ready only when:
+
+- Greek lookup works for at least one real Greek passage.
+- Latin v0.1 behavior still passes.
+- every displayed data item has provenance or an explicit warning.
+- source sentence estimates are labeled as estimates.
+- no UI element suggests the correct interpretation.
+- all tests pass.
+- README documents Greek and Latin examples with real outcomes.
+- the app still runs with `pip install -r requirements.txt && uvicorn main:app --reload`.

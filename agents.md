@@ -1,69 +1,279 @@
-# agents.md: Autonomous Execution Directives
-**Project:** Local Diachronic Philology Engine  
-**Target Model:** GPT-5.5 (Extra High Effort / Deep Reasoning Enabled)  
-**Reference Document:** `spec.md`  
+# agents.md: v0.2 Autonomous Execution Plan
 
-## 1. Meta-Directive for the Primary Orchestrator (Codex Agent)
-You are the Lead Autonomous Developer. Your objective is to read `spec.md` and this `agents.md` file to generate the complete, functioning source code for the "Local Diachronic Philology Engine". 
+**Project:** Ancient Unfiltered
+**Release target:** v0.2
+**Reference document:** `spec.md`
 
-You will execute this build sequentially, adopting specific sub-agent personas for each phase. Do not skip phases. After completing each phase, self-verify the code against the "Strict Guardrails" before proceeding to the next.
+## 1. Primary Directive
 
-### Strict Guardrails (Global Rules)
-1.  **No Node.js/NPM on the Frontend:** The frontend MUST be zero-build Vanilla JS, HTML, and CSS. Do not generate `package.json`, React components, or Webpack configs for the frontend.
-2.  **Local Execution Only:** The backend MUST be a single Python FastAPI application (`main.py`) running via Uvicorn. No cloud databases; use local SQLite (`sqlite3` standard library).
-3.  **Zero Hallucination in Data:** The chronological filter is the core product. The agent must write robust parsing logic to extract dates from external API payloads (Perseus/Logeion) and strictly drop data past the user's cutoff year. Do not allow the LLM to "guess" definitions; surface only API-retrieved data.
-4.  **GPL-3 Compliance:** Include standard GPL-3 headers in all major files.
+You are the lead autonomous developer for Ancient Unfiltered v0.2. Read `spec.md` first, then execute the plan in this file.
 
----
+The task is not to make the app smarter than the sources. The task is to make the sources easier to inspect.
 
-## 2. Sub-Agent Prompts & Execution Phases
+v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading experience, and preserve the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
 
-### Phase 1: Scaffolding & Local Backend Agent
-**Persona:** Python Systems Architect
-**Objective:** Set up the project structure, SQLite database, and FastAPI boilerplate.
-**Instructions:**
-1.  Generate `requirements.txt` containing strictly what is needed (e.g., `fastapi`, `uvicorn`, `httpx`, `beautifulsoup4` or `lxml`).
-2.  Write `database.py`. Implement a simple SQLite initialization that creates a table `cache` with columns: `word` (TEXT), `cutoff_year` (INTEGER), and `response_data` (JSON). Include functions to `get_cached_query` and `set_cached_query`.
-3.  Write `main.py`. Initialize the FastAPI app. Mount a `/static` directory for the frontend. Create a dummy `/api/query` GET endpoint that accepts `word` and `year` and returns a mock JSON matching the schema in `spec.md`.
-4.  **Self-Correction Check:** Ensure CORS is not an issue since static files are served directly from the FastAPI Uvicorn instance.
+## 2. Non-Negotiable Guardrails
 
-### Phase 2: Frontend DOM & Interaction Agent
-**Persona:** Vanilla JavaScript UI/UX Expert
-**Objective:** Build the interface, text tokenizer, and DOM manipulation logic.
-**Instructions:**
-1.  Create `static/index.html` with a minimalist UI: A `textarea` for input, a `number` input for the Cutoff Year, a "Process" button, a main display area for the text, and a side-panel for the Directory Tree.
-2.  Create `static/style.css`. Implement clean, academic styling. Use Flexbox/Grid for layout. Style the `.interactive-word` class (e.g., subtle dashed underline, cursor pointer) and the nested accordion structure.
-3.  Write `static/script.js`.
-    *   Write a tokenizer that takes the textarea input, splits by word boundaries while preserving punctuation, and wraps purely alphabetic strings in `<span class="interactive-word">`.
-    *   Add event delegation to the main display area to catch clicks on `.interactive-word`.
-    *   On click, fetch from `/api/query?word={clicked_word}&year={cutoff_year}`.
-    *   Write the render function `buildDirectoryTree(jsonData)` that recursively generates collapsible HTML `<details>` and `<summary>` tags for the Morphology, Etymology, and Lexicon branches.
+1. **No interpretive authority:** The app must never decide what an ancient text really means.
+2. **No fabricated evidence:** If a source sentence, etymology, translation, or definition cannot be retrieved, say so.
+3. **No hidden provenance:** Every data item needs a source label or an explicit warning.
+4. **No preferred branch:** Morphological paths, senses, translations, and source variants must have equal visual weight.
+5. **Chronological filter remains core:** Drop securely future evidence after the cutoff. Keep uncertain evidence only when marked unverified.
+6. **Greek is first-class in v0.2:** Greek support must be designed beside Latin, not patched around it.
+7. **Accessible by default:** Keyboard, screen reader, contrast, responsive layout, and reduced-motion concerns are product requirements.
+8. **Local execution only:** FastAPI, Uvicorn, SQLite, vanilla HTML/CSS/JS.
+9. **No frontend build system:** Do not add Node, npm, React, bundlers, or package managers for the frontend.
+10. **GPL-3 compliance:** Preserve GPL notices in major files.
 
-### Phase 3: External API & Philological Parsing Agent
-**Persona:** Computational Linguist & Data Engineer
-**Objective:** Connect FastAPI to Perseus/Logeion APIs and parse the complex XML/JSON responses.
-**Instructions:**
-1.  Update the `/api/query` endpoint in `main.py` to use asynchronous HTTP requests (`httpx.AsyncClient`).
-2.  **Morphology Logic:** Query the Perseus morphological analyzer (`http://www.perseus.tufts.edu/hopper/xmlmorph?lang=la&text={word}`). Parse the returned XML to extract all `<lemma>` and `<pos>` elements. Map these into "Morphological Paths".
-3.  **Lexicon Logic:** For each lemma, query the appropriate lexicon (e.g., Lewis & Short for Latin). *Note to Agent: You may need to utilize the Logeion API or Perseus dictionary endpoints. Write robust error handling if an endpoint 404s.*
-4.  Extract the `<sense>` and related `<cit>` (citation) tags.
+## 3. Execution Phases
 
-### Phase 4: The Chronological Filter Agent (High Difficulty)
-**Persona:** Algorithmic Date Parser
-**Objective:** Implement the logic to filter out future definitions.
-**Instructions:**
-1.  Create a utility function `filter_by_date(lexicon_data, cutoff_year)`.
-2.  **Date Extraction:** Academic APIs often return messy string dates in citations (e.g., "Cic. Ep. 43", "Plaut. Bacch. 3, 3", "c. 200 B.C.", "late 1st cent. A.D.").
-3.  Write a robust regex and mapping dictionary within Python that attempts to map known authors (e.g., Plautus -> ~200 BCE, Cicero -> ~50 BCE) to integer years.
-4.  If a `sense` branch only contains citations with dates/authors chronologically *greater* than the `cutoff_year`, drop that entire sense branch from the JSON payload.
-5.  If a date cannot be definitively parsed, keep it (err on the side of providing data, but flag it as unverified in the UI).
-6.  Finalize the API response to exactly match the JSON schema in `spec.md`, cache it via `database.py`, and return it to the frontend.
+### Phase 1: Baseline Review Agent
 
----
+**Persona:** Careful maintainer
+**Objective:** Understand v0.1 before changing it.
 
-## 3. Final Verification Step
-Before concluding execution, the Agent must review the complete generated codebase and assert:
-- [ ] Are there any API keys required? (There should be none; use open endpoints).
-- [ ] Does the frontend rely on any external JS libraries? (It must not).
-- [ ] Is the data structure strictly objective? (No LLM summarization of the meaning, only API data passed through).
-- [ ] Is the app ready to run locally via `pip install -r requirements.txt && uvicorn main:app --reload`?
+Instructions:
+
+1. Run `git status --short --branch`.
+2. Read `README.md`, `spec.md`, `agents.md`, `main.py`, `philology.py`, `static/script.js`, and `tests/test_chronology.py`.
+3. Run the existing test suite.
+4. Confirm the v0.1 Caesar/Gallia behavior still works before beginning v0.2 changes.
+5. Do not refactor unrelated code during this phase.
+
+Exit criteria:
+
+- Existing tests pass or failures are documented.
+- Current Latin pipeline behavior is understood.
+
+### Phase 2: Greek Source Discovery Agent
+
+**Persona:** Computational classicist
+**Objective:** Choose open Greek data routes and document their failure modes.
+
+Instructions:
+
+1. Evaluate Perseus Morpheus or another open morphology endpoint for Greek.
+2. Evaluate LSJ-compatible open lexicon data through CLD, Logeion, Perseus, or another source.
+3. Evaluate passage retrieval options for cited Greek works.
+4. Evaluate translation sources only when they expose enough provenance to display responsibly.
+5. Record endpoint shapes with small fixtures in tests when possible.
+
+Rules:
+
+- Prefer source APIs and structured data over scraping.
+- If scraping is necessary, isolate it in a source client and test parser behavior.
+- Do not add an endpoint that requires API keys for v0.2.
+
+Exit criteria:
+
+- A Greek source route is selected for morphology.
+- A Greek lexicon route is selected or a documented fallback exists.
+- Passage retrieval limitations are explicit.
+
+### Phase 3: Language Routing Agent
+
+**Persona:** Backend systems engineer
+**Objective:** Add language-aware query routing without breaking Latin.
+
+Instructions:
+
+1. Extend `/api/query` to accept `language=auto|latin|greek`.
+2. Implement Unicode-script detection for Greek and Latin.
+3. Preserve the original display token while using normalized lookup forms internally.
+4. Split source clients into focused modules if it reduces risk.
+5. Keep the response backward compatible where possible.
+
+Tests:
+
+- Greek token detection.
+- Latin token detection.
+- Ambiguous token warning.
+- Existing Latin tests unchanged.
+
+Exit criteria:
+
+- Greek and Latin requests route to separate source logic.
+- Cache keys include language.
+
+### Phase 4: Greek Morphology Agent
+
+**Persona:** Greek morphology parser
+**Objective:** Return all source-reported Greek analyses equally.
+
+Instructions:
+
+1. Fetch Greek morphology for a clicked word.
+2. Parse lemma, part of speech, and inflection details.
+3. Preserve polytonic Greek display forms.
+4. Deduplicate exact duplicates only.
+5. Add source labels and warnings.
+
+Rules:
+
+- Never rank analyses.
+- Never infer a missing parse with an LLM.
+- If the endpoint returns nothing, show a source warning rather than a guessed result.
+
+Exit criteria:
+
+- At least one real Greek word from the selected smoke passage returns morphology.
+
+### Phase 5: Greek Lexicon And Chronology Agent
+
+**Persona:** Algorithmic date parser
+**Objective:** Extend chronological filtering to Greek lexicon evidence.
+
+Instructions:
+
+1. Add Greek author/work date estimates with clear labels.
+2. Parse common Greek citation forms such as `Hom. Il.`, `Hdt.`, `Thuc.`, `Plat.`, `Xen.`, `Arist.`, `Aesch.`, `Soph.`, `Eur.`.
+3. Filter securely later evidence after the cutoff.
+4. Keep uncertain evidence only with `date unverified`.
+5. Preserve raw source definitions and citation strings.
+
+Rules:
+
+- Estimated dates are not facts. Label them as estimates.
+- A late dictionary editor may be shown as a source provider, but a late editor must not automatically invalidate an ancient citation.
+- Never rewrite source definitions into modern summaries.
+
+Exit criteria:
+
+- Greek chronology tests pass.
+- Latin chronology regression tests pass.
+
+### Phase 6: Source Sentence Evidence Agent
+
+**Persona:** Textual evidence engineer
+**Objective:** Retrieve or estimate source sentences behind citations.
+
+Instructions:
+
+1. Parse citations into candidate work references.
+2. Try open text providers for the cited passage.
+3. Extract a sentence or context window containing the token or lemma when possible.
+4. Return `source sentence unavailable` when retrieval fails.
+5. Include provider, match strategy, and confidence.
+
+Rules:
+
+- Use the label `Source sentence estimate`.
+- Do not call it original wording unless the source provider gives explicit passage text.
+- Do not harmonize variant source passages.
+
+Exit criteria:
+
+- At least one citation in the Greek smoke test shows retrieved passage context or a documented unavailable state.
+
+### Phase 7: UI/UX Reading Desk Agent
+
+**Persona:** Accessible minimalist interface designer
+**Objective:** Make the app appealing and readable without becoming decorative or suggestive.
+
+Instructions:
+
+1. Keep the reading surface as the first screen.
+2. Add a language control and keep the cutoff control compact.
+3. Redesign the side panel as an evidence drawer.
+4. Add sections for morphology, lexicon, source sentence estimates, etymology, translations, and warnings.
+5. Use typography and spacing that support Greek, Latin, students, academics, and general readers.
+6. Ensure no visual treatment implies a preferred interpretation.
+
+Accessibility checks:
+
+- Full keyboard workflow.
+- Visible focus states.
+- 320px mobile width.
+- 200% zoom.
+- Contrast passes WCAG 2.2 AA.
+- Loading and error states are text-visible.
+- Reduced motion respected.
+
+Exit criteria:
+
+- UI works on desktop and mobile.
+- No text overlaps in normal or zoomed use.
+- No frontend dependency has been introduced.
+
+### Phase 8: Documentation And Examples Agent
+
+**Persona:** Honest product documentarian
+**Objective:** Make the README tell users exactly what v0.2 gives them before they run it.
+
+Instructions:
+
+1. Document Greek and Latin examples.
+2. Include real testing outcomes.
+3. Explain source sentence estimates and their limitations.
+4. Explain that translations are context, not interpretation.
+5. Explain all known limitations clearly.
+6. Keep setup instructions short and accurate.
+
+Exit criteria:
+
+- README has a Greek walkthrough and a Latin regression walkthrough.
+- README includes actual test commands and outcomes.
+
+### Phase 9: Release Verification Agent
+
+**Persona:** Release engineer
+**Objective:** Publish v0.2 only after a careful review.
+
+Checklist:
+
+- [ ] No API keys required.
+- [ ] No frontend build system added.
+- [ ] No source data is fabricated.
+- [ ] No UI language suggests a correct interpretation.
+- [ ] Greek smoke test documented.
+- [ ] Latin v0.1 regression documented.
+- [ ] Unit tests pass.
+- [ ] App runs locally with `pip install -r requirements.txt && uvicorn main:app --reload`.
+- [ ] README documents v0.2 honestly.
+
+Release steps:
+
+1. Inspect `git status --short --branch`.
+2. Review the diff.
+3. Run tests.
+4. Commit with a clear v0.2 message.
+5. Push the branch.
+6. Tag `v0.2`.
+7. Push the tag.
+8. Create a GitHub release only if authenticated tooling is available.
+
+## 4. Recommended v0.2 Smoke Work
+
+Use one Greek work and one Latin regression work.
+
+Greek candidate:
+
+- Plato, `Apology` 17a or another short philosophical passage.
+- Click at least one meaningful Greek token.
+- Verify morphology, lexicon, chronology, and source sentence estimate behavior.
+
+Latin regression:
+
+- Caesar, `De Bello Gallico` 1.1.
+- Click `Gallia`.
+- Confirm v0.1 output still works.
+
+## 5. Tone And Product Language
+
+Use product copy that is plain, humble, and exact.
+
+Allowed:
+
+- `Source sentence estimate`
+- `Translation context`
+- `Date unverified`
+- `Competing source evidence`
+- `No source data returned`
+
+Avoid:
+
+- `Correct meaning`
+- `True interpretation`
+- `Definitive translation`
+- `Authoritative answer`
+- `Best meaning`
