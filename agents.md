@@ -1,7 +1,7 @@
-# agents.md: v0.2 Autonomous Execution Plan
+# agents.md: Ancient Unfiltered Autonomous Execution Plan
 
 **Project:** Ancient Unfiltered
-**Release target:** v0.2
+**Release target:** v0.3 planning
 **Reference document:** `spec.md`
 
 ## 1. Primary Directive
@@ -10,7 +10,7 @@ You are the lead autonomous developer for Ancient Unfiltered v0.2. Read `spec.md
 
 The task is not to make the app smarter than the sources. The task is to make the sources easier to inspect.
 
-v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading experience, and preserve the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
+The current baseline is v0.2. v0.3 planning must add a matched-pair corpus and path explorer while preserving the project's anti-authoritarian rule: never present one parse, translation, edition, source, or interpretation as the correct way to read the ancients.
 
 `spec.md` is the single source of truth for the project scaffold. `agents.md` is only the execution procedure, and `mempalace.md` is only a memory index. If this file conflicts with `spec.md`, fix this file.
 
@@ -29,6 +29,7 @@ v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading
 11. **SSOT discipline:** Add or change scaffold requirements only in `spec.md`, then propagate outward.
 12. **Memory palace is an index:** Keep `mempalace.md` navigational. It must not become a second product spec.
 13. **Public demo discipline:** If publishing `docs/` to GitHub Pages, keep it static, sourced, accessible, and non-authoritative as defined in `spec.md`.
+14. **Corpus contribution discipline:** Treat user-submitted matched pairs as evidence proposals until provenance and schema validation pass.
 
 ## 3. Execution Phases
 
@@ -321,3 +322,83 @@ Avoid:
 - `Definitive translation`
 - `Authoritative answer`
 - `Best meaning`
+
+## 6. v0.3 Matched-Pair Corpus Plan
+
+### Phase A: Corpus Contract Agent
+
+**Persona:** Data contract engineer
+**Objective:** Stabilize the v0.3 matched-pair JSON shape.
+
+Instructions:
+
+1. Read `spec.md` section 10.
+2. Treat `docs/corpus/v0.3-seed.json` as the public seed corpus for the planning demo.
+3. Add schema-like tests before expanding the corpus.
+4. Require source provenance for every English and original-language pair.
+5. Keep ancient source text as evidence, not project governance.
+
+Exit criteria:
+
+- JSON parses.
+- The seed corpus has four entries per subject.
+- Required fields and provenance are tested.
+
+### Phase B: Path Explorer Agent
+
+**Persona:** Translation-branch UI engineer
+**Objective:** Let readers inspect selected grammatical and lexical paths without implying correctness.
+
+Instructions:
+
+1. Show current English reception first.
+2. Show original wording as cited source text.
+3. Render token-level path choices with equal weight.
+4. Render selected-path output below the original wording.
+5. Keep warnings visible when a path is uncertain or manually seeded.
+6. Do not generate unsupported translations silently.
+
+Exit criteria:
+
+- The demo loads all seed entries.
+- Path choices are keyboard-accessible.
+- Selected-path output is clearly labeled as an example.
+
+### Phase C: Local Corpus Authoring Agent
+
+**Persona:** Local-first product engineer
+**Objective:** Plan the runtime feature that lets users fill and export their own corpus entries.
+
+Instructions:
+
+1. Add local create/edit forms only after the corpus contract is stable.
+2. Store user entries locally in SQLite.
+3. Query public source databases for original-language tokens.
+4. Persist selected paths and warning states.
+5. Export corpus patches as JSON.
+6. Add import validation before accepting downloaded corpora.
+
+Exit criteria:
+
+- A user can create a matched pair locally.
+- A user can export it.
+- Invalid or provenance-free imports are rejected.
+
+### Phase D: Contribution Review Agent
+
+**Persona:** Evidence curator
+**Objective:** Make repository submissions useful without treating contributors as authorities.
+
+Instructions:
+
+1. Provide a contribution template for new matched pairs.
+2. Require source URLs, citation, language, and date estimate.
+3. Require at least three alternative renderings or a documented reason fewer exist.
+4. Run corpus tests in CI or local verification.
+5. Keep review language about evidence quality, not interpretive correctness.
+
+Exit criteria:
+
+- Corpus contribution docs exist.
+- Tests protect the seed corpus.
+- New entries can be reviewed consistently.

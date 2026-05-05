@@ -26,6 +26,7 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 | `AGENTS` | `agents.md` | execution protocol derived from the spec |
 | `USERDOCS` | `README.md` | shipped user-facing promise |
 | `PUBLICDEMO` | `docs/` | static GitHub Pages demo |
+| `CORPUS` | `docs/corpus/v0.3-seed.json`, `tests/test_v03_corpus_seed.py` | v0.3 matched-pair seed corpus |
 | `RUNTIME` | `main.py`, `database.py`, `philology.py`, `static/` | current app behavior |
 | `CHRONO` | `sources/chronology.py`, `tests/` | cutoff and date-estimate behavior |
 | `EVIDENCE` | `examples/`, future fixtures | source inputs and captured source shapes |
@@ -56,6 +57,13 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 - Canonical directory: `docs/`
 - Use for: a static, sourced, accessible preview of the product promise.
 - Rule: demo content follows `spec.md` section 3.2. It must not become a runtime substitute or interpretive authority.
+
+### 3B. Corpus Table: v0.3 Matched Pairs
+
+- Canonical seed file: `docs/corpus/v0.3-seed.json`
+- Tests: `tests/test_v03_corpus_seed.py`
+- Use for: English/current reception paired with cited original wording, path options, and example alternative outputs.
+- Rule: corpus entries are evidence proposals with provenance. They are not interpretations blessed by the project.
 
 ### 4. West Cabinet: Running System
 

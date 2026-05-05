@@ -1,0 +1,446 @@
+{
+  "version": "v0.3-plan-seed",
+  "language_scope": ["grc"],
+  "created": "2026-05-05",
+  "description": "Initial matched-pair corpus for the v0.3 planning demo. Each entry pairs a familiar English reception with cited Greek wording and multiple grammar-respecting English paths.",
+  "policy": [
+    "The current English is a reception anchor, not an authority.",
+    "The Greek wording is cited source text, not a final recovered original.",
+    "Alternative translations are examples of possible paths, not ranked answers.",
+    "Submitted entries must include provenance before they can enter the corpus."
+  ],
+  "entries": [
+    {
+      "id": "friendship-epicurus-kd-27",
+      "theme": "friendship",
+      "author": "Epicurus",
+      "work": "Principal Doctrines",
+      "citation": "KD 27",
+      "approximate_year": -270,
+      "current_english": "The greatest thing wisdom provides for a happy life is friendship.",
+      "critical_original": {
+        "language": "grc",
+        "text": "Ὧν ἡ σοφία παρασκευάζεται εἰς τὴν τοῦ ὅλου βίου μακαριότητα, πολὺ μέγιστόν ἐστιν ἡ τῆς φιλίας κτῆσις.",
+        "source_label": "Usener-style Greek text via Lexundria",
+        "source_url": "https://lexundria.com/epic_kd/27/cf",
+        "confidence": "public-source"
+      },
+      "path_options": [
+        {"token": "φιλίας", "lemma": "φιλία", "options": ["friendship", "bond of friendship", "friendly relation"]},
+        {"token": "κτῆσις", "lemma": "κτῆσις", "options": ["acquisition", "possession", "securing"]},
+        {"token": "μακαριότητα", "lemma": "μακαριότης", "options": ["happiness", "blessedness", "complete flourishing"]}
+      ],
+      "alternative_translations": [
+        "Of what wisdom prepares for happiness over the whole life, by far the greatest is acquiring friendship.",
+        "Among the provisions wisdom makes for a completely blessed life, the possession of friendship is much the greatest.",
+        "For lifelong flourishing, wisdom's largest provision is the gaining of friendship."
+      ],
+      "example_selected_output": "For lifelong flourishing, wisdom's largest provision is the securing of friendship."
+    },
+    {
+      "id": "friendship-aristotle-ne-1155a",
+      "theme": "friendship",
+      "author": "Aristotle",
+      "work": "Nicomachean Ethics",
+      "citation": "1155a",
+      "approximate_year": -325,
+      "current_english": "No one would choose to live without friends.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ἄνευ γὰρ φίλων οὐδεὶς ἕλοιτ᾽ ἂν ζῆν, ἔχων τὰ λοιπὰ ἀγαθὰ πάντα.",
+        "source_label": "Perseus Digital Library, Aristotle Nicomachean Ethics",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0054%3Abekker+page%3D1155a%3Abekker+line%3D3",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "ἄνευ", "lemma": "ἄνευ", "options": ["without", "apart from"]},
+        {"token": "φίλων", "lemma": "φίλος", "options": ["friends", "dear ones", "friendly persons"]},
+        {"token": "ἕλοιτ᾽ ἂν", "lemma": "αἱρέω", "options": ["would choose", "would prefer", "would take up"]}
+      ],
+      "alternative_translations": [
+        "Without friends, no one would choose to live, even while having all the other goods.",
+        "No one would prefer life apart from friends, though possessing every remaining good.",
+        "A life with every other good would still not be chosen if friends were absent."
+      ],
+      "example_selected_output": "No one would prefer life apart from friends, even with every other good in hand."
+    },
+    {
+      "id": "friendship-aristotle-ne-1166a",
+      "theme": "friendship",
+      "author": "Aristotle",
+      "work": "Nicomachean Ethics",
+      "citation": "1166a",
+      "approximate_year": -325,
+      "current_english": "A friend is another self.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ἔστι γὰρ ὁ φίλος ἄλλος αὐτός.",
+        "source_label": "Perseus Digital Library, Aristotle Nicomachean Ethics Book 9",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0054%3Abook%3D9",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "φίλος", "lemma": "φίλος", "options": ["friend", "beloved friend", "one dear to someone"]},
+        {"token": "ἄλλος", "lemma": "ἄλλος", "options": ["another", "other", "a second"]},
+        {"token": "αὐτός", "lemma": "αὐτός", "options": ["self", "same one", "himself"]}
+      ],
+      "alternative_translations": [
+        "The friend is another self.",
+        "A friend is a second self.",
+        "The one dear to us stands as another oneself."
+      ],
+      "example_selected_output": "The friend is a second self, not merely a useful companion."
+    },
+    {
+      "id": "friendship-epicurus-vs-23",
+      "theme": "friendship",
+      "author": "Epicurus",
+      "work": "Vatican Sayings",
+      "citation": "VS 23",
+      "approximate_year": -270,
+      "current_english": "Every friendship is worth choosing for its own sake.",
+      "critical_original": {
+        "language": "grc",
+        "text": "Πᾶσα φιλία δι᾽ ἑαυτὴν αἱρετή· ἀρχὴν δὲ εἴληφεν ἀπὸ τῆς ὠφελείας.",
+        "source_label": "Open Greek text of Epicurus Vatican Sayings",
+        "source_url": "https://monadnock.net/epicurus/vatican-sayings.html",
+        "confidence": "fragment-collection"
+      },
+      "path_options": [
+        {"token": "Πᾶσα", "lemma": "πᾶς", "options": ["every", "all", "each"]},
+        {"token": "αἱρετή", "lemma": "αἱρετός", "options": ["choiceworthy", "to be chosen", "worth selecting"]},
+        {"token": "ὠφελείας", "lemma": "ὠφέλεια", "options": ["benefit", "advantage", "usefulness"]}
+      ],
+      "alternative_translations": [
+        "Every friendship is choiceworthy for itself, though it took its beginning from benefit.",
+        "All friendship is worth choosing in itself, even if its origin lies in advantage.",
+        "Each friendship is selectable for its own sake; its start, however, has come from usefulness."
+      ],
+      "example_selected_output": "All friendship is worth choosing in itself, even when its beginning came from usefulness."
+    },
+    {
+      "id": "community-aristotle-pol-1253a",
+      "theme": "community",
+      "author": "Aristotle",
+      "work": "Politics",
+      "citation": "1253a",
+      "approximate_year": -322,
+      "current_english": "Man is by nature a political animal.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ὁ ἄνθρωπος φύσει πολιτικὸν ζῷον ... λόγον δὲ μόνον ἄνθρωπος ἔχει τῶν ζῴων ... ἡ δὲ τούτων κοινωνία ποιεῖ οἰκίαν καὶ πόλιν.",
+        "source_label": "W. D. Ross text via Perseus Digital Library",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Aabo%3Atlg%2C0086%2C035%3A1%3A1253a",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "πολιτικὸν", "lemma": "πολιτικός", "options": ["political", "civic", "polis-living"]},
+        {"token": "ζῷον", "lemma": "ζῷον", "options": ["animal", "living creature"]},
+        {"token": "λόγον", "lemma": "λόγος", "options": ["speech", "account", "reasoned discourse"]}
+      ],
+      "alternative_translations": [
+        "The human being is by nature a polis-living creature.",
+        "A human is naturally a civic animal, more than any bee or herd creature.",
+        "The human animal is fitted by nature for shared civic life because it has speech or reason."
+      ],
+      "example_selected_output": "The human being is by nature a civic living creature whose shared life depends on speech."
+    },
+    {
+      "id": "community-aristotle-pol-1252a",
+      "theme": "community",
+      "author": "Aristotle",
+      "work": "Politics",
+      "citation": "1252a",
+      "approximate_year": -322,
+      "current_english": "Every city is a community established for some good.",
+      "critical_original": {
+        "language": "grc",
+        "text": "πᾶσαν πόλιν ὁρῶμεν κοινωνίαν τινὰ οὖσαν καὶ πᾶσαν κοινωνίαν ἀγαθοῦ τινος ἕνεκεν συνεστηκυῖαν.",
+        "source_label": "Perseus Digital Library, Aristotle Politics 1252a",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0057",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "πόλιν", "lemma": "πόλις", "options": ["city", "polis", "civic community"]},
+        {"token": "κοινωνίαν", "lemma": "κοινωνία", "options": ["community", "partnership", "association"]},
+        {"token": "ἕνεκεν", "lemma": "ἕνεκα", "options": ["for the sake of", "because of", "with a view to"]}
+      ],
+      "alternative_translations": [
+        "We see every polis as a kind of association, and every association as constituted for the sake of some good.",
+        "Every city appears to be some partnership, and every partnership has been put together with a view to some good.",
+        "A polis is seen as a community of some sort, and every community stands for some perceived good."
+      ],
+      "example_selected_output": "Every polis is a kind of partnership, formed with a view to some good."
+    },
+    {
+      "id": "community-plato-rep-369b",
+      "theme": "community",
+      "author": "Plato",
+      "work": "Republic",
+      "citation": "369b",
+      "approximate_year": -375,
+      "current_english": "A city comes into being because none of us is self-sufficient.",
+      "critical_original": {
+        "language": "grc",
+        "text": "Γίγνεται τοίνυν πόλις, ὡς ἐγᾦμαι, ἐπειδὴ τυγχάνει ἡμῶν ἕκαστος οὐκ αὐτάρκης, ἀλλὰ πολλῶν ἐνδεής.",
+        "source_label": "Plato Republic 369b, Greek text tradition via Perseus-linked sources",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=urn%3Acts%3AgreekLit%3Atlg0059.tlg030.perseus-eng1%3A369",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "Γίγνεται", "lemma": "γίγνομαι", "options": ["comes into being", "arises", "is generated"]},
+        {"token": "αὐτάρκης", "lemma": "αὐτάρκης", "options": ["self-sufficient", "enough for oneself", "independent"]},
+        {"token": "ἐνδεής", "lemma": "ἐνδεής", "options": ["in need", "lacking", "deficient"]}
+      ],
+      "alternative_translations": [
+        "A city comes into being, I think, because each of us is not self-sufficient but in need of many things.",
+        "The polis arises since each person is not enough for himself, but lacks many things.",
+        "A city is generated when each of us turns out not to be independent, but needy in many respects."
+      ],
+      "example_selected_output": "The polis arises because each person is not enough for himself and lacks many things."
+    },
+    {
+      "id": "community-plato-protagoras-322c",
+      "theme": "community",
+      "author": "Plato",
+      "work": "Protagoras",
+      "citation": "322c",
+      "approximate_year": -390,
+      "current_english": "Justice and reverence bind cities together.",
+      "critical_original": {
+        "language": "grc",
+        "text": "Ἑρμῆν πέμπει ἄγοντα εἰς ἀνθρώπους αἰδῶ τε καὶ δίκην, ἵν᾽ εἶεν πόλεων κόσμοι τε καὶ δεσμοὶ φιλίας συναγωγοί.",
+        "source_label": "Plato Protagoras 322c Greek text via Open Protagoras",
+        "source_url": "https://openprotagoras.wikidot.com/pagex:322",
+        "confidence": "public-source"
+      },
+      "path_options": [
+        {"token": "αἰδῶ", "lemma": "αἰδώς", "options": ["reverence", "shame", "respectful restraint"]},
+        {"token": "δίκην", "lemma": "δίκη", "options": ["justice", "right order", "judgment"]},
+        {"token": "δεσμοὶ", "lemma": "δεσμός", "options": ["bonds", "ties", "bindings"]}
+      ],
+      "alternative_translations": [
+        "Hermes brings reverence and justice to human beings so they may be orderings of cities and bonds that gather friendship.",
+        "Respectful restraint and justice are sent among humans to become civic ornaments and ties that bring friendship together.",
+        "Shame and right judgment make possible the ordering of cities and the bonds that collect people into friendship."
+      ],
+      "example_selected_output": "Reverence and justice become the ties that gather friendship and order cities."
+    },
+    {
+      "id": "intelligence-plato-ap-21d",
+      "theme": "intelligence",
+      "author": "Plato",
+      "work": "Apology",
+      "citation": "21d",
+      "approximate_year": -399,
+      "current_english": "I know that I know nothing.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ἃ μὴ οἶδα οὐδὲ οἴομαι εἰδέναι.",
+        "source_label": "John Burnet text via Perseus Digital Library",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0169%3Atext%3DApol.%3Asection%3D21d",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "ἃ μὴ", "lemma": "ὅς + μή", "options": ["the things which not", "what I do not"]},
+        {"token": "οἶδα", "lemma": "οἶδα", "options": ["I know", "I have seen", "I am aware of"]},
+        {"token": "οἴομαι", "lemma": "οἴομαι", "options": ["I suppose", "I imagine", "I think myself"]}
+      ],
+      "alternative_translations": [
+        "What I do not know, I do not even suppose that I know.",
+        "The things I am not aware of, I also do not imagine myself to know.",
+        "Where I lack knowledge, I do not hold the opinion that I know."
+      ],
+      "example_selected_output": "What I do not know, I do not even suppose that I know."
+    },
+    {
+      "id": "intelligence-aristotle-met-980a",
+      "theme": "intelligence",
+      "author": "Aristotle",
+      "work": "Metaphysics",
+      "citation": "980a",
+      "approximate_year": -325,
+      "current_english": "All human beings by nature desire to know.",
+      "critical_original": {
+        "language": "grc",
+        "text": "πάντες ἄνθρωποι τοῦ εἰδέναι ὀρέγονται φύσει.",
+        "source_label": "Perseus Digital Library, Aristotle Metaphysics 980a",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0051",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "πάντες", "lemma": "πᾶς", "options": ["all", "every"]},
+        {"token": "εἰδέναι", "lemma": "οἶδα", "options": ["to know", "to understand", "to have seen/known"]},
+        {"token": "ὀρέγονται", "lemma": "ὀρέγω", "options": ["desire", "reach toward", "long for"]}
+      ],
+      "alternative_translations": [
+        "All humans by nature reach toward knowing.",
+        "Every human being naturally longs to know.",
+        "Human beings, all of them, have by nature a desire for understanding."
+      ],
+      "example_selected_output": "Every human being naturally reaches toward understanding."
+    },
+    {
+      "id": "intelligence-plato-theaet-155d",
+      "theme": "intelligence",
+      "author": "Plato",
+      "work": "Theaetetus",
+      "citation": "155d",
+      "approximate_year": -369,
+      "current_english": "Philosophy begins in wonder.",
+      "critical_original": {
+        "language": "grc",
+        "text": "μάλα γὰρ φιλοσόφου τοῦτο τὸ πάθος, τὸ θαυμάζειν· οὐ γὰρ ἄλλη ἀρχὴ φιλοσοφίας ἢ αὕτη.",
+        "source_label": "Perseus Digital Library, Plato Theaetetus 155d",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0171%3Atext%3DTheaet.%3Asection%3D155d",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "πάθος", "lemma": "πάθος", "options": ["experience", "condition", "affection"]},
+        {"token": "θαυμάζειν", "lemma": "θαυμάζω", "options": ["to wonder", "to be amazed", "to be struck with perplexity"]},
+        {"token": "ἀρχὴ", "lemma": "ἀρχή", "options": ["beginning", "principle", "starting point"]}
+      ],
+      "alternative_translations": [
+        "This experience, wondering, is very much the philosopher's condition; there is no other beginning of philosophy.",
+        "Wonder is especially the pathos of a philosopher, for philosophy has no other starting point.",
+        "Being struck with wonder is the philosopher's condition; this, and no other, is philosophy's beginning."
+      ],
+      "example_selected_output": "Being struck with wonder is the philosopher's condition and philosophy's starting point."
+    },
+    {
+      "id": "intelligence-plato-meno-81d",
+      "theme": "intelligence",
+      "author": "Plato",
+      "work": "Meno",
+      "citation": "81d",
+      "approximate_year": -385,
+      "current_english": "Learning is recollection.",
+      "critical_original": {
+        "language": "grc",
+        "text": "τὸ γὰρ ζητεῖν ἄρα καὶ τὸ μανθάνειν ἀνάμνησις ὅλον ἐστίν.",
+        "source_label": "Plato Meno 81d Greek text via Gadsden Classics",
+        "source_url": "https://classics.andrewgadsden.com/library/plato/meno/1",
+        "confidence": "public-source"
+      },
+      "path_options": [
+        {"token": "ζητεῖν", "lemma": "ζητέω", "options": ["searching", "inquiring", "seeking"]},
+        {"token": "μανθάνειν", "lemma": "μανθάνω", "options": ["learning", "coming to understand"]},
+        {"token": "ἀνάμνησις", "lemma": "ἀνάμνησις", "options": ["recollection", "calling back to mind", "remembrance"]}
+      ],
+      "alternative_translations": [
+        "Seeking and learning, then, are as a whole recollection.",
+        "Inquiry and coming to understand are, taken altogether, remembering again.",
+        "The whole process of searching and learning is calling back to mind."
+      ],
+      "example_selected_output": "Inquiry and coming to understand are, taken altogether, recollection."
+    },
+    {
+      "id": "love-plato-sym-206a",
+      "theme": "love",
+      "author": "Plato",
+      "work": "Symposium",
+      "citation": "206a",
+      "approximate_year": -380,
+      "current_english": "Love is the desire to possess the good forever.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ἔστιν ἄρα συλλήβδην, ἔφη, ὁ ἔρως τοῦ τὸ ἀγαθὸν αὑτῷ εἶναι ἀεί.",
+        "source_label": "John Burnet text via Perseus Digital Library",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0173%3Atext%3DSym.%3Apage%3D206",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "ἔρως", "lemma": "ἔρως", "options": ["love", "longing", "desire"]},
+        {"token": "ἀγαθὸν", "lemma": "ἀγαθός", "options": ["good", "beneficial", "noble good"]},
+        {"token": "αὑτῷ εἶναι", "lemma": "αὑτῷ + εἰμί", "options": ["to be one's own", "to be for oneself", "to belong to oneself"]}
+      ],
+      "alternative_translations": [
+        "So, in sum, love is for the good to be one's own always.",
+        "Love, taken together, is directed at the good being present to oneself forever.",
+        "Desire is that the good should belong to oneself always."
+      ],
+      "example_selected_output": "Love, in sum, is for the good to belong to oneself always."
+    },
+    {
+      "id": "love-plato-sym-202e",
+      "theme": "love",
+      "author": "Plato",
+      "work": "Symposium",
+      "citation": "202e",
+      "approximate_year": -380,
+      "current_english": "Love is between mortal and immortal.",
+      "critical_original": {
+        "language": "grc",
+        "text": "δαίμων μέγας, ὦ Σώκρατες· καὶ γὰρ πᾶν τὸ δαιμόνιον μεταξύ ἐστι θεοῦ τε καὶ θνητοῦ.",
+        "source_label": "John Burnet text via Perseus Digital Library",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0173%3Atext%3DSym.%3Asection%3D202e",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "δαίμων", "lemma": "δαίμων", "options": ["spirit", "divine intermediary", "daimon"]},
+        {"token": "μεταξύ", "lemma": "μεταξύ", "options": ["between", "in the middle of", "intermediate between"]},
+        {"token": "θνητοῦ", "lemma": "θνητός", "options": ["mortal", "death-bound"]}
+      ],
+      "alternative_translations": [
+        "A great daimon, Socrates; for the whole daimonic is between god and mortal.",
+        "A great intermediary spirit; every daimonic thing stands between divine and mortal.",
+        "Love is a great daimon, since the daimonic is intermediate between god and death-bound human life."
+      ],
+      "example_selected_output": "Love is a great intermediary spirit, standing between divine and mortal life."
+    },
+    {
+      "id": "love-plato-sym-204b",
+      "theme": "love",
+      "author": "Plato",
+      "work": "Symposium",
+      "citation": "204b",
+      "approximate_year": -380,
+      "current_english": "Love is a philosopher.",
+      "critical_original": {
+        "language": "grc",
+        "text": "Ἔρως δ᾽ ἐστὶν ἔρως περὶ τὸ καλόν, ὥστε ἀναγκαῖον ἔρωτα φιλόσοφον εἶναι.",
+        "source_label": "John Burnet text via Perseus Digital Library",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0173%3Atext%3DSym.%3Asection%3D204b",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "περὶ", "lemma": "περί", "options": ["about", "around", "concerned with"]},
+        {"token": "καλόν", "lemma": "καλός", "options": ["beautiful", "noble", "fine"]},
+        {"token": "φιλόσοφον", "lemma": "φιλόσοφος", "options": ["lover of wisdom", "philosophical", "wisdom-loving"]}
+      ],
+      "alternative_translations": [
+        "Eros is desire concerned with the beautiful, so Eros must be wisdom-loving.",
+        "Love is love around the noble, and therefore love is necessarily philosophical.",
+        "Because Eros is directed toward beauty, Eros must be a lover of wisdom."
+      ],
+      "example_selected_output": "Because Eros is concerned with the noble-beautiful, love must be wisdom-loving."
+    },
+    {
+      "id": "love-plato-phaedrus-249e",
+      "theme": "love",
+      "author": "Plato",
+      "work": "Phaedrus",
+      "citation": "249e",
+      "approximate_year": -370,
+      "current_english": "The lover of beauty is called a lover.",
+      "critical_original": {
+        "language": "grc",
+        "text": "ταύτης μετέχων τῆς μανίας ὁ ἐρῶν τῶν καλῶν ἐραστὴς καλεῖται.",
+        "source_label": "Plato Phaedrus Greek text via public Burnet-based sources",
+        "source_url": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0173%3APhaedrus",
+        "confidence": "public-critical-text"
+      },
+      "path_options": [
+        {"token": "μανίας", "lemma": "μανία", "options": ["madness", "inspiration", "divine frenzy"]},
+        {"token": "ἐρῶν", "lemma": "ἐράω", "options": ["loving", "desiring", "being in love with"]},
+        {"token": "καλῶν", "lemma": "καλός", "options": ["beautiful things", "noble things", "fine things"]}
+      ],
+      "alternative_translations": [
+        "The one who shares in this madness and loves beautiful things is called a lover.",
+        "Whoever partakes of this inspiration, desiring noble things, receives the name lover.",
+        "A person participating in this divine frenzy, in love with beauty, is called an erastēs."
+      ],
+      "example_selected_output": "The one who shares in this inspiration and desires noble things is called a lover."
+    }
+  ]
+}

@@ -1,11 +1,11 @@
-# spec.md: Ancient Unfiltered v0.2 Product Specification
+# spec.md: Ancient Unfiltered Product Specification
 
 ## 1. Project Overview
 
 **Name:** Ancient Unfiltered
-**Release target:** v0.2
+**Release target:** v0.3 planning
 **License:** GNU General Public License v3.0 or later
-**Current baseline:** v0.1 local Latin-first MVP
+**Current baseline:** v0.2 Greek-and-Latin evidence desk
 
 Ancient Unfiltered is a local, source-first reading desk for ancient texts. v0.2 expands the v0.1 Latin MVP toward Greek works while improving the interface so it feels useful and inviting to philosophy academics, classicists, students, and independent readers.
 
@@ -173,6 +173,7 @@ v0.2 must preserve the v0.1 local-first architecture.
 |   |-- passages.py
 |   `-- etymology.py
 |-- docs/                  # static GitHub Pages demo
+|   `-- corpus/            # public seed corpus for demo and v0.3 planning
 |-- static/
 |   |-- index.html
 |   |-- style.css
@@ -403,3 +404,110 @@ v0.2 is ready only when:
 - all tests pass.
 - README documents Greek and Latin examples with real outcomes.
 - the app still runs with `pip install -r requirements.txt && uvicorn main:app --reload`.
+
+## 10. v0.3 Planning: Matched-Pair Corpus And Path Explorer
+
+v0.3 should turn the v0.2 evidence desk into a corpus-backed translation
+experiment surface.
+
+The core v0.3 object is a matched pair:
+
+1. a familiar or currently used English reception of an ancient sentence
+2. a cited original-language wording, initially Greek
+3. source provenance for both sides
+4. token-level grammar and meaning paths derived from public source queries
+5. one or more logically and grammatically coherent alternative translations
+
+The product must continue to avoid interpretive authority. A selected path is a
+reader experiment, not the app's judgment.
+
+### 10.1. v0.3 Seed Corpus
+
+The initial public seed corpus lives at:
+
+```text
+docs/corpus/v0.3-seed.json
+```
+
+It contains 16 Greek matched pairs:
+
+- four friendship entries
+- four community entries
+- four intelligence entries
+- four love entries
+
+The seed corpus includes the four public demo examples from v0.2 and three
+additional sourced examples per subject.
+
+Each seed entry must include:
+
+- stable `id`
+- `theme`
+- author, work, citation, approximate ancient date
+- `current_english`
+- `critical_original.language`
+- `critical_original.text`
+- `critical_original.source_label`
+- `critical_original.source_url`
+- `path_options`
+- at least three `alternative_translations`
+- `example_selected_output`
+
+### 10.2. User Corpus Contributions
+
+v0.3 should let users add their own matched pairs locally, then export them for
+review or repository submission.
+
+Required local workflow:
+
+1. user enters an English reception sentence
+2. user enters or pastes cited original-language wording
+3. user records source provenance and citation
+4. app queries public morphology and lexicon sources for original tokens
+5. user chooses possible grammar/meaning paths
+6. app records selected paths and generated alternative translation drafts
+7. user exports a JSON corpus patch
+
+Repository submissions must be treated as evidence proposals. A submitted pair
+cannot enter the seed corpus without provenance, schema validation, and review.
+
+### 10.3. Path Explorer UI
+
+The v0.3 UI should show:
+
+- current English reception at the top
+- interactive original wording below it
+- token-level branch choices for grammar and lexical range
+- warnings for uncertain, missing, or post-cutoff evidence
+- selected-path translation preview below the original wording
+- all viable alternatives with equal visual weight
+- export controls for the matched pair or whole corpus
+
+"Grammatically and logically sound" means:
+
+- the chosen translation respects the selected morphology and syntax
+- selected lexical choices do not contradict each other inside the sentence
+- missing evidence is labeled instead of filled by invention
+- the output remains an alternative rendering, not a final meaning
+
+### 10.4. v0.3 Public Demo
+
+The GitHub Pages demo should preview the v0.3 corpus model with the seed corpus.
+It may be static, but it must load the seed JSON, show all 16 entries, and let a
+reader inspect path options and example selected outputs.
+
+The demo must still avoid claims that translators or copyists deliberately
+distorted the text. It may explain that copying, edition history, grammar, and
+translator choices can all create reception drift.
+
+### 10.5. v0.3 Tests
+
+Minimum tests:
+
+- seed corpus JSON parses
+- seed corpus has four entries per subject
+- every entry has required matched-pair fields
+- every entry has source provenance
+- banned authoritative phrases are absent
+- future runtime corpus import rejects missing provenance
+- export/import roundtrip preserves selected path data

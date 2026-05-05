@@ -10,8 +10,9 @@ Public demo:
 https://filipzarzynski.github.io/ancient-unfiltered/
 ```
 
-The demo shows four Greek philosophical examples in English first, then beside
-the source Greek and multiple grammar-respecting renderings.
+The demo now previews the v0.3 matched-pair corpus model with 16 Greek
+philosophical examples, each pairing a familiar English reception with cited
+Greek wording, swappable meaning paths, and example alternative renderings.
 
 ## What v0.2 Gives You
 
@@ -24,6 +25,23 @@ the source Greek and multiple grammar-respecting renderings.
 - **Translation context:** retrieved translations are labeled as context, not interpretation.
 - **Local SQLite cache:** repeated `(word, cutoff_year, language)` lookups are cached locally.
 - **No API keys and no frontend build:** FastAPI, SQLite, static HTML/CSS/JS.
+
+## v0.3 Planning Preview
+
+v0.3 is planned around a downloadable matched-pair corpus:
+
+- predefined English reception sentence
+- cited original-language wording
+- token-level grammar and meaning paths
+- example selected-path alternative translation
+- local user-added corpus entries
+- JSON export for repository submission and review
+
+The current planning seed corpus is served at:
+
+```text
+docs/corpus/v0.3-seed.json
+```
 
 ## What It Still Does Not Do
 
@@ -97,6 +115,7 @@ Live v0.2 regression result on 2026-05-05:
 |-- philology.py           # high-level orchestration
 |-- sources/               # morphology, lexica, passages, etymology, chronology
 |-- docs/                  # static GitHub Pages demo
+|   `-- corpus/            # v0.3 planning seed corpus
 |-- mempalace.md           # project memory index, not a second spec
 |-- requirements.txt
 |-- static/
@@ -127,6 +146,12 @@ Validation performed for v0.2 on 2026-05-05:
 - Greek FastAPI smoke test passed for `κατηγόρων`.
 - Latin FastAPI regression smoke test passed for `Gallia`.
 - Desktop and mobile headless Chrome screenshots rendered without a frontend build step.
+
+Additional v0.3 planning validation:
+
+- seed corpus JSON parses
+- corpus structure tests verify 16 entries and four entries per subject
+- public demo loads the seed corpus as static JSON
 
 ## License
 
