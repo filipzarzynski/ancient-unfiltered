@@ -26,7 +26,7 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 | `AGENTS` | `agents.md` | execution protocol derived from the spec |
 | `USERDOCS` | `README.md` | shipped user-facing promise |
 | `RUNTIME` | `main.py`, `database.py`, `philology.py`, `static/` | current app behavior |
-| `CHRONO` | `philology.py`, future `sources/`, `tests/` | cutoff and date-estimate behavior |
+| `CHRONO` | `sources/chronology.py`, `tests/` | cutoff and date-estimate behavior |
 | `EVIDENCE` | `examples/`, future fixtures | source inputs and captured source shapes |
 | `VERIFY` | `tests/`, `README.md` | repeatable checks and documented outcomes |
 
@@ -52,13 +52,13 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 
 ### 4. West Cabinet: Running System
 
-- Canonical files: `main.py`, `database.py`, `philology.py`, `static/`
+- Canonical files: `main.py`, `database.py`, `philology.py`, `sources/`, `static/`
 - Use for: local FastAPI app, cache, source parsing, frontend reading desk.
 - Rule: implementation follows `spec.md`; when implementation diverges, either fix code or update `spec.md` deliberately.
 
 ### 5. Chronology Gate
 
-- Canonical files: `philology.py`, future `sources/` modules, tests under `tests/`
+- Canonical files: `sources/chronology.py`, `sources/passages.py`, tests under `tests/`
 - Use for: cutoff logic, author/work date estimates, unverified-date handling.
 - Rule: date estimates are always labeled as estimates. Future evidence is dropped only when securely later than the cutoff.
 

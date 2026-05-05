@@ -40,19 +40,31 @@ def init_db() -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS cache_v2 (
+                word TEXT NOT NULL,
+                cutoff_year INTEGER NOT NULL,
+                language TEXT NOT NULL,
+                response_data TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (word, cutoff_year, language)
+            )
+            """
+        )
 
 
-def get_cached_query(word: str, cutoff_year: int) -> dict[str, Any] | None:
+def get_cached_query(word: str, cutoff_year: int, language: str = "latin") -> dict[str, Any] | None:
     """Return a cached response for a normalized word/year pair."""
     normalized = word.casefold()
     with _connect() as connection:
         row = connection.execute(
             """
             SELECT response_data
-            FROM cache
-            WHERE word = ? AND cutoff_year = ?
+            FROM cache_v2
+            WHERE word = ? AND cutoff_year = ? AND language = ?
             """,
-            (normalized, cutoff_year),
+            (normalized, cutoff_year, language),
         ).fetchone()
 
     if row is None:
@@ -61,18 +73,23 @@ def get_cached_query(word: str, cutoff_year: int) -> dict[str, Any] | None:
     return json.loads(row["response_data"])
 
 
-def set_cached_query(word: str, cutoff_year: int, response_data: dict[str, Any]) -> None:
+def set_cached_query(
+    word: str,
+    cutoff_year: int,
+    response_data: dict[str, Any],
+    language: str = "latin",
+) -> None:
     """Store a JSON-serializable response for a normalized word/year pair."""
     normalized = word.casefold()
     serialized = json.dumps(response_data, ensure_ascii=False, sort_keys=True)
     with _connect() as connection:
         connection.execute(
             """
-            INSERT INTO cache (word, cutoff_year, response_data)
-            VALUES (?, ?, ?)
-            ON CONFLICT(word, cutoff_year) DO UPDATE SET
+            INSERT INTO cache_v2 (word, cutoff_year, language, response_data)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(word, cutoff_year, language) DO UPDATE SET
                 response_data = excluded.response_data,
                 created_at = CURRENT_TIMESTAMP
             """,
-            (normalized, cutoff_year, serialized),
+            (normalized, cutoff_year, language, serialized),
         )

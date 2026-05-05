@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 app = FastAPI(
-    title="Local Diachronic Philology Engine",
-    version="0.1.0",
-    description="Local-first ancient language lookup with morphology, etymology, and chronological lexical filtering.",
+    title="Ancient Unfiltered",
+    version="0.2.0",
+    description="Local-first ancient language lookup with source provenance and chronological lexical filtering.",
 )
 
 init_db()
@@ -42,15 +42,20 @@ async def index() -> FileResponse:
 async def query(
     word: str = Query(..., min_length=1, max_length=80),
     year: int = Query(..., ge=-3000, le=2100),
+    language: str = Query("auto", pattern="^(auto|latin|greek)$"),
+    context: str = Query("", max_length=2000),
+    token_index: int | None = Query(None, ge=0),
 ) -> dict:
     normalized = normalize_word(word)
     if not normalized:
         raise HTTPException(status_code=400, detail="The query word contains no searchable letters.")
 
-    cached = get_cached_query(normalized, year)
+    cached = get_cached_query(normalized, year, language)
     if cached is not None:
+        cached["local_context"] = {"sentence": context, "token_index": token_index}
         return cached
 
-    response = await build_response(normalized, year)
-    set_cached_query(normalized, year, response)
+    response = await build_response(normalized, year, language, context, token_index)
+    cached_response = {**response, "local_context": {"sentence": "", "token_index": None}}
+    set_cached_query(normalized, year, cached_response, language)
     return response

@@ -24,8 +24,14 @@ version.
             <p>Local diachronic philology engine</p>
           </div>
           <form class="controls" id="process-form">
+            <label for="language-mode">Language</label>
+            <select id="language-mode" name="language">
+              <option value="auto" selected>Auto</option>
+              <option value="greek">Greek</option>
+              <option value="latin">Latin</option>
+            </select>
             <label for="cutoff-year">Cutoff year</label>
-            <input id="cutoff-year" name="year" type="number" value="-50" min="-3000" max="2100" step="1" />
+            <input id="cutoff-year" name="year" type="number" value="-399" min="-3000" max="2100" step="1" />
             <button type="submit" title="Process text">
               <span>Process</span>
             </button>
@@ -33,16 +39,16 @@ version.
         </header>
 
         <label class="input-label" for="source-text">Source text</label>
-        <textarea id="source-text" spellcheck="false">Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.</textarea>
+        <textarea id="source-text" spellcheck="false">Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα.</textarea>
 
         <section class="text-output" aria-label="Processed text">
           <div id="processed-text" class="processed-text"></div>
         </section>
       </section>
 
-      <aside class="side-panel" aria-label="Directory tree">
+      <aside class="side-panel" aria-label="Evidence drawer">
         <div class="panel-heading">
-          <h2>Directory Tree</h2>
+          <h2>Evidence</h2>
           <span id="query-state" class="query-state">Idle</span>
         </div>
         <div id="tree-root" class="tree-root">

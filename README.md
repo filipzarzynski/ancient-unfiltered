@@ -1,26 +1,28 @@
 # Ancient Unfiltered
 
-**Ancient Unfiltered** is a local, zero-build diachronic philology MVP for reading ancient texts with a historical cutoff. Paste a passage, set a year, click a word, and the app opens a collapsible directory tree of source-derived morphology, etymology, and lexicon data.
+**Ancient Unfiltered** is a local, zero-build reading desk for ancient texts. Paste a passage, set a historical cutoff year, click a word, and inspect source-derived morphology, lexicon evidence, etymology, source sentence estimates, translations, and warnings.
 
-The project is intentionally modest in v0.1: it is Latin-first, local-first, and evidence-first. It does not choose the "right" parsing, does not translate the passage, and does not invent definitions.
+The app does not choose the correct interpretation. It exposes evidence and provenance so readers can decide what to do with it.
 
-## What You Get
+## What v0.2 Gives You
 
-- **Clickable text processing:** paste a passage, press **Process**, and every alphabetic token becomes clickable while punctuation is preserved.
-- **Historical cutoff year:** use negative years for BCE, for example `-50` for 50 BCE.
-- **Morphological paths:** fetched from the Perseus morphology endpoint and rendered as equal-weight alternatives.
-- **Chronological lexicon:** fetched from CLD's Lewis & Short data, then filtered against the cutoff year when citations can be dated.
-- **Etymology branch:** fetched from Wiktionary when a Latin etymology section is available.
-- **Local SQLite cache:** repeated `(word, cutoff_year)` lookups are stored in `cache.db`.
-- **No frontend build:** static HTML, CSS, and vanilla JavaScript served by FastAPI.
-- **No API keys:** the MVP uses open web endpoints.
+- **Greek and Latin lookup:** `Auto`, `Greek`, and `Latin` modes.
+- **Clickable text processing:** alphabetic tokens become keyboard-accessible lookup targets.
+- **Chronological cutoff:** negative years are BCE, for example `-399` for 399 BCE.
+- **Morphological paths:** all source-reported analyses are shown with equal weight.
+- **Chronological lexicon:** Latin uses Lewis & Short through CLD; Greek uses LSJ through CLD when available.
+- **Source sentence estimates:** supported Greek citations such as `Pl. Ap. 18a` are retrieved from Perseus when possible.
+- **Translation context:** retrieved translations are labeled as context, not interpretation.
+- **Local SQLite cache:** repeated `(word, cutoff_year, language)` lookups are cached locally.
+- **No API keys and no frontend build:** FastAPI, SQLite, static HTML/CSS/JS.
 
-## What It Does Not Do Yet
+## What It Still Does Not Do
 
-- It does not run offline for first-time lookups; external endpoints are required until data is cached.
-- It does not support Greek parsing as a first-class workflow yet.
-- It keeps undated or ambiguous citations and marks them as `date unverified`.
-- Dense dictionary entries can still be rough. The filter removes known future author anchors, but v0.1 is not a complete scholarly citation parser.
+- It is not an offline corpus. First-time lookups need network access to open endpoints.
+- Greek source sentence retrieval is intentionally narrow in v0.2. Plato `Apology` Stephanus citations are supported first.
+- Chronological dates are estimates when derived from author/work mappings.
+- Undated evidence is retained only with an unverified-date label.
+- Dense dictionary prose can still contain source abbreviations that are not fully parsed.
 
 ## Quick Start
 
@@ -37,59 +39,45 @@ Then open:
 http://127.0.0.1:8000
 ```
 
-## Try The Caesar Example
+## Greek Smoke Example
 
-The repo includes [examples/caesar_bellum_gallicum_1_1.txt](examples/caesar_bellum_gallicum_1_1.txt), Julius Caesar's *Commentarii de Bello Gallico* 1.1.
+Use [examples/plato_apology_17a.txt](examples/plato_apology_17a.txt).
 
-Recommended first run:
+Recommended run:
 
-1. Paste the chapter into the source text box.
-2. Set the cutoff year to `-50`.
-3. Press **Process**.
+1. Paste the Plato passage.
+2. Set language to `Greek`.
+3. Set cutoff year to `-399`.
+4. Click `κατηγόρων`.
+
+Live v0.2 result on 2026-05-05:
+
+- Status `200`.
+- Language resolved to `greek`.
+- Perseus Morpheus returned 8 morphology paths for `κατηγόρων`.
+- CLD/LSJ returned one lexicon entry for `κατήγορος`.
+- Chronology kept pre-cutoff estimated citations including `Hdt. 3.71`, `And. 4.16`, and `Pl. Ap. 18a`.
+- Later evidence such as `Apoc. 12.10` and `PFlor. 6.6 (iii AD)` was stripped from the displayed definition.
+- The `Pl. Ap. 18a` citation returned a Perseus Greek source sentence estimate.
+- Perseus English translation context was attached and labeled as context, not interpretation.
+
+## Latin Regression Example
+
+Use [examples/caesar_bellum_gallicum_1_1.txt](examples/caesar_bellum_gallicum_1_1.txt).
+
+Recommended run:
+
+1. Paste the Caesar passage.
+2. Set language to `Latin`.
+3. Set cutoff year to `-50`.
 4. Click `Gallia`.
 
-Expected shape of the result:
+Live v0.2 regression result on 2026-05-05:
 
-```json
-{
-  "word": "gallia",
-  "query_year": -50,
-  "morphology": [
-    {"path": "Path A", "pos": "Noun", "lemma": "Gallia", "details": "form: gallia, case: voc, number: sg, gender: fem"},
-    {"path": "Path B", "pos": "Noun", "lemma": "Gallia", "details": "form: gallia, case: nom, number: sg, gender: fem"}
-  ],
-  "etymology": {
-    "root": "",
-    "literal_meaning": ""
-  },
-  "lexicon": [
-    {
-      "sense": "Gallia / CLD JSON / Lewis Short / Sense 1",
-      "definition": "Gallia, ae, v. 1. Galli, II. A.",
-      "citations": ["No dated citation parsed (date unverified)"]
-    }
-  ]
-}
-```
-
-The actual live test returned 15 morphology paths for `Gallia`, including noun and adjective possibilities. The README snippet is shortened so it stays readable.
-
-## Testing
-
-Run the local test suite:
-
-```bash
-.venv/bin/python -m unittest discover
-```
-
-Validation performed for v0.1 on 2026-05-05:
-
-- `python3 -m py_compile database.py philology.py main.py tests/test_chronology.py` passed.
-- `.venv/bin/python -m unittest discover` passed: 7 tests.
-- FastAPI smoke test passed with status `200` for `GET /api/query?word=Gallia&year=-50`.
-- Live Perseus morphology returned 15 paths for `Gallia`.
-- Live CLD Lewis & Short lookup returned the `Gallia, ae, v. 1. Galli, II. A.` dictionary entry.
-- Rich lookup `rivalem` returned 3 morphology paths and kept pre-50 BCE citation anchors such as Plautus, Catullus, Naevius, Terence, and Cicero while stripping known later anchors from the citation list.
+- Status `200`.
+- Language resolved to `latin`.
+- Perseus Morpheus returned 15 morphology paths.
+- CLD/Lewis & Short returned the `Gallia, ae, v. 1. Galli, II. A.` lexicon entry.
 
 ## Architecture
 
@@ -97,7 +85,8 @@ Validation performed for v0.1 on 2026-05-05:
 .
 |-- main.py                # FastAPI app and /api/query route
 |-- database.py            # SQLite cache
-|-- philology.py           # external fetch, parsing, and chronological filter
+|-- philology.py           # high-level orchestration
+|-- sources/               # morphology, lexica, passages, etymology, chronology
 |-- mempalace.md           # project memory index, not a second spec
 |-- requirements.txt
 |-- static/
@@ -105,24 +94,29 @@ Validation performed for v0.1 on 2026-05-05:
 |   |-- style.css
 |   `-- script.js
 |-- tests/
-|   `-- test_chronology.py
 `-- examples/
-    `-- caesar_bellum_gallicum_1_1.txt
 ```
 
-## Data Sources
+## Project Memory And SSOT
 
-- Perseus Digital Library morphology endpoint.
-- CLD/BBAW dictionary API for Lewis & Short descriptions.
-- Wiktionary parse API for Latin etymology text when available.
+The project scaffold uses a strict single source of truth model. [spec.md](spec.md) is the normative source for product and architecture decisions; [agents.md](agents.md) is the execution plan derived from it; [mempalace.md](mempalace.md) is only a navigation index.
 
-All displayed definitions and citations are passed through from external source data. The app adds only structural labels, chronological filtering, and `date unverified` flags.
+Ancient texts and examples are evidence inputs with their own provenance. They are not used as project governance.
 
-## Project Memory
+## Testing
 
-The project scaffold uses a strict single source of truth model. [spec.md](spec.md) is the normative source for product and architecture decisions; [agents.md](agents.md) is the execution plan derived from it; [mempalace.md](mempalace.md) is only a navigation index for project memory.
+```bash
+python3 -m py_compile database.py philology.py main.py sources/*.py tests/*.py
+.venv/bin/python -m unittest discover
+```
 
-Ancient texts and examples are evidence inputs with their own provenance. They are not used as the project's governance source of truth.
+Validation performed for v0.2 on 2026-05-05:
+
+- `py_compile` passed.
+- Unit tests passed: 14 tests.
+- Greek FastAPI smoke test passed for `κατηγόρων`.
+- Latin FastAPI regression smoke test passed for `Gallia`.
+- Desktop and mobile headless Chrome screenshots rendered without a frontend build step.
 
 ## License
 

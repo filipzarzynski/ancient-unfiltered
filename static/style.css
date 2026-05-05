@@ -29,6 +29,7 @@ version.
 
 body {
   margin: 0;
+  overflow-x: hidden;
   min-height: 100vh;
   background: var(--paper);
   color: var(--ink);
@@ -37,6 +38,7 @@ body {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -45,14 +47,16 @@ textarea {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
   gap: 0;
+  width: 100%;
   min-height: 100vh;
 }
 
 .workspace {
   display: grid;
-  grid-template-rows: auto minmax(150px, 28vh) minmax(240px, 1fr);
+  grid-template-rows: auto auto minmax(150px, 28vh) minmax(240px, 1fr);
   gap: 18px;
   padding: 28px;
+  min-width: 0;
 }
 
 .topbar {
@@ -80,7 +84,7 @@ h1 {
 
 .controls {
   display: grid;
-  grid-template-columns: auto 110px auto;
+  grid-template-columns: auto 120px auto 110px auto;
   align-items: center;
   gap: 10px;
 }
@@ -92,13 +96,21 @@ h1 {
   text-transform: uppercase;
 }
 
-.controls input {
-  width: 110px;
+.controls input,
+.controls select {
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 10px 11px;
   background: var(--surface);
   color: var(--ink);
+}
+
+.controls input {
+  width: 110px;
+}
+
+.controls select {
+  width: 120px;
 }
 
 .controls button {
@@ -122,6 +134,7 @@ h1 {
 textarea {
   width: 100%;
   min-height: 100%;
+  min-width: 0;
   resize: vertical;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -129,21 +142,26 @@ textarea {
   background: var(--surface);
   color: var(--ink);
   line-height: 1.55;
+  overflow-wrap: anywhere;
   box-shadow: var(--shadow);
 }
 
 .text-output {
   min-height: 0;
+  min-width: 0;
   border-top: 1px solid var(--line);
   padding-top: 18px;
 }
 
 .processed-text {
+  width: 100%;
   min-height: 100%;
   max-width: 74ch;
   font-size: 1.18rem;
   line-height: 1.9;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .interactive-word {
@@ -155,7 +173,8 @@ textarea {
 .interactive-word:hover,
 .interactive-word:focus {
   color: var(--accent);
-  outline: 2px solid transparent;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .interactive-word.is-selected {
@@ -243,7 +262,7 @@ summary {
   }
 
   .workspace {
-    grid-template-rows: auto minmax(180px, 30vh) auto;
+    grid-template-rows: auto auto minmax(160px, 26vh) auto;
     padding: 20px;
   }
 
@@ -253,7 +272,7 @@ summary {
   }
 
   .controls {
-    grid-template-columns: 1fr 110px auto;
+    grid-template-columns: 1fr 120px 1fr 110px auto;
   }
 
   .side-panel {
@@ -264,12 +283,29 @@ summary {
 }
 
 @media (max-width: 520px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .processed-text {
+    font-size: 1.06rem;
+  }
+
   .controls {
     grid-template-columns: 1fr;
   }
 
   .controls input,
+  .controls select,
   .controls button {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
   }
 }
