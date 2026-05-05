@@ -25,6 +25,7 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 | `SSOT` | `spec.md` | normative scaffold truth |
 | `AGENTS` | `agents.md` | execution protocol derived from the spec |
 | `USERDOCS` | `README.md` | shipped user-facing promise |
+| `PUBLICDEMO` | `docs/` | static GitHub Pages demo |
 | `RUNTIME` | `main.py`, `database.py`, `philology.py`, `static/` | current app behavior |
 | `CHRONO` | `sources/chronology.py`, `tests/` | cutoff and date-estimate behavior |
 | `EVIDENCE` | `examples/`, future fixtures | source inputs and captured source shapes |
@@ -49,6 +50,12 @@ The ancient texts themselves are not governed by this project SSOT. They are evi
 - Canonical file: `README.md`
 - Use for: what users get today, installation, examples, known limitations, validation outcomes.
 - Rule: README describes shipped behavior. It should not promise v0.2 behavior before that behavior exists.
+
+### 3A. Public Atrium: GitHub Pages Demo
+
+- Canonical directory: `docs/`
+- Use for: a static, sourced, accessible preview of the product promise.
+- Rule: demo content follows `spec.md` section 3.2. It must not become a runtime substitute or interpretive authority.
 
 ### 4. West Cabinet: Running System
 

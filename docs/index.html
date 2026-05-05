@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ancient Unfiltered Demo</title>
+    <meta
+      name="description"
+      content="A static Ancient Unfiltered demo showing how Greek grammar and source evidence can widen familiar philosophical translations."
+    >
+    <link rel="stylesheet" href="styles.css">
+    <script src="demo.js" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Demo navigation">
+        <a class="brand" href="#top" aria-label="Ancient Unfiltered demo home">Ancient Unfiltered</a>
+        <div class="navlinks">
+          <a href="#examples">Examples</a>
+          <a href="#method">Method</a>
+          <a href="https://github.com/filipzarzynski/ancient-unfiltered">GitHub</a>
+        </div>
+      </nav>
+      <section class="hero-copy" id="top">
+        <p class="eyebrow">Public demo for v0.2</p>
+        <h1>What changes when the ancient words stay visible?</h1>
+        <p>
+          Four familiar Greek philosophical sayings, shown first as English,
+          then beside the source Greek and the kind of grammatical evidence
+          Ancient Unfiltered exposes before interpretation begins.
+        </p>
+        <a class="primary-link" href="#examples">Explore the examples</a>
+      </section>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="intro-title">
+        <div>
+          <p class="eyebrow">Not an oracle</p>
+          <h2 id="intro-title">This page is a mockup of the reader promise.</h2>
+        </div>
+        <p>
+          The point is not to accuse a translator, copyist, school, or edition.
+          The point is narrower and more useful: compact Greek can support more
+          than one responsible English rendering. A reader should see the
+          source wording, the grammar, the lexicon path, and the historical
+          uncertainty before inheriting a slogan.
+        </p>
+      </section>
+
+      <section class="toolbar" aria-label="Filter examples">
+        <button class="filter-button active" type="button" data-filter="all">All</button>
+        <button class="filter-button" type="button" data-filter="friendship">Friendship</button>
+        <button class="filter-button" type="button" data-filter="community">Community</button>
+        <button class="filter-button" type="button" data-filter="intelligence">Intelligence</button>
+        <button class="filter-button" type="button" data-filter="love">Love</button>
+      </section>
+
+      <section class="examples" id="examples" aria-label="Greek philosophy examples">
+        <article class="example" data-theme="friendship">
+          <div class="example-heading">
+            <p class="theme-label">Friendship</p>
+            <h2>Epicurus, Principal Doctrines 27</h2>
+          </div>
+
+          <section class="english-first" aria-label="English first">
+            <h3>English first</h3>
+            <p>The greatest thing wisdom provides for a happy life is friendship.</p>
+          </section>
+
+          <div class="source-grid">
+            <section aria-label="Greek source">
+              <h3>Critical source text</h3>
+              <blockquote lang="grc">
+                Ὧν ἡ σοφία παρασκευάζεται εἰς τὴν τοῦ ὅλου βίου μακαριότητα,
+                πολὺ μέγιστόν ἐστιν ἡ τῆς φιλίας κτῆσις.
+              </blockquote>
+              <p class="source-note">
+                Greek text: Usener edition via
+                <a href="https://lexundria.com/epic_kd/27/cf">Lexundria, Epic. KD 27</a>.
+              </p>
+            </section>
+
+            <section aria-label="Tool evidence">
+              <h3>Tool evidence signals</h3>
+              <ul class="evidence-list">
+                <li><strong>φιλίας</strong> returned 5 morphology paths; genitive forms can point to friendship as relation, not only friends as people.</li>
+                <li><strong>κτῆσις</strong> returned noun evidence for acquisition, getting, or possession.</li>
+                <li><strong>μακαριότητα</strong> is stronger than casual happiness; blessedness, flourishing, or complete life-satisfaction may be in play.</li>
+              </ul>
+            </section>
+          </div>
+
+          <section aria-label="Translation variants">
+            <h3>Grammatically viable renderings</h3>
+            <ol class="renderings">
+              <li>Of what wisdom prepares for happiness over the whole life, by far the greatest is acquiring friendship.</li>
+              <li>Among the provisions wisdom makes for a completely blessed life, the possession of friendship is much the greatest.</li>
+              <li>For lifelong flourishing, wisdom's largest provision is the gaining of friendship.</li>
+            </ol>
+          </section>
+
+          <section class="tilt" aria-label="Translation tilt">
+            <h3>Where reception can tilt</h3>
+            <p>
+              Turning <span lang="grc">κτῆσις</span> into only "having friends"
+              can hide the active sense of acquiring or securing friendship.
+              Turning <span lang="grc">φιλία</span> into "friends" can shift the
+              sentence from a practice or relation into a countable social asset.
+            </p>
+          </section>
+        </article>
+
+        <article class="example" data-theme="community">
+          <div class="example-heading">
+            <p class="theme-label">Community</p>
+            <h2>Aristotle, Politics 1.1253a</h2>
+          </div>
+
+          <section class="english-first" aria-label="English first">
+            <h3>English first</h3>
+            <p>Man is by nature a political animal.</p>
+          </section>
+
+          <div class="source-grid">
+            <section aria-label="Greek source">
+              <h3>Critical source text</h3>
+              <blockquote lang="grc">
+                ὁ ἄνθρωπος φύσει πολιτικὸν ζῷον ... λόγον δὲ μόνον ἄνθρωπος
+                ἔχει τῶν ζῴων ... ἡ δὲ τούτων κοινωνία ποιεῖ οἰκίαν καὶ πόλιν.
+              </blockquote>
+              <p class="source-note">
+                Greek text: W. D. Ross edition via
+                <a href="https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Aabo%3Atlg%2C0086%2C035%3A1%3A1253a">Perseus, Arist. Pol. 1253a</a>.
+              </p>
+            </section>
+
+            <section aria-label="Tool evidence">
+              <h3>Tool evidence signals</h3>
+              <ul class="evidence-list">
+                <li><strong>πολιτικὸν</strong> returned adjective evidence tied to citizens, civic life, and the polis.</li>
+                <li><strong>ζῷον</strong> is living creature or animal, not a modern political actor.</li>
+                <li><strong>λόγος</strong> can mean speech, account, reasoning, or argument, so "political" rests on communicative judgment.</li>
+              </ul>
+            </section>
+          </div>
+
+          <section aria-label="Translation variants">
+            <h3>Grammatically viable renderings</h3>
+            <ol class="renderings">
+              <li>The human being is by nature a polis-living creature.</li>
+              <li>A human is naturally a civic animal, more than any bee or herd creature.</li>
+              <li>The human animal is fitted by nature for shared civic life because it has speech or reason.</li>
+            </ol>
+          </section>
+
+          <section class="tilt" aria-label="Translation tilt">
+            <h3>Where reception can tilt</h3>
+            <p>
+              "Political animal" sounds modern and institutional. The Greek
+              phrase sits inside a claim about <span lang="grc">λόγος</span>,
+              shared judgment, household, and polis. "Social animal" also loses
+              something if it drops the civic and verbal logic of the sentence.
+            </p>
+          </section>
+        </article>
+
+        <article class="example" data-theme="intelligence">
+          <div class="example-heading">
+            <p class="theme-label">Intelligence</p>
+            <h2>Socrates in Plato, Apology 21d</h2>
+          </div>
+
+          <section class="english-first" aria-label="English first">
+            <h3>English first</h3>
+            <p>I know that I know nothing.</p>
+          </section>
+
+          <div class="source-grid">
+            <section aria-label="Greek source">
+              <h3>Critical source text</h3>
+              <blockquote lang="grc">
+                ἔοικα γοῦν τούτου γε σμικρῷ τινι αὐτῷ τούτῳ σοφώτερος εἶναι,
+                ὅτι ἃ μὴ οἶδα οὐδὲ οἴομαι εἰδέναι.
+              </blockquote>
+              <p class="source-note">
+                Greek text: John Burnet edition via
+                <a href="https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0169%3Atext%3DApol.%3Asection%3D21d">Perseus, Pl. Ap. 21d</a>.
+              </p>
+            </section>
+
+            <section aria-label="Tool evidence">
+              <h3>Tool evidence signals</h3>
+              <ul class="evidence-list">
+                <li><strong>οἶδα</strong> returned perfect-form verb evidence for knowing or having seen.</li>
+                <li><strong>οἴομαι</strong> returned verb evidence for supposing, thinking, or imagining.</li>
+                <li><strong>ἃ μὴ</strong> frames "the things which I do not know," not an unlimited doctrine that nothing is known.</li>
+              </ul>
+            </section>
+          </div>
+
+          <section aria-label="Translation variants">
+            <h3>Grammatically viable renderings</h3>
+            <ol class="renderings">
+              <li>What I do not know, I do not even suppose that I know.</li>
+              <li>The things I am not aware of, I also do not imagine myself to know.</li>
+              <li>Where I lack knowledge, I do not hold the opinion that I know.</li>
+            </ol>
+          </section>
+
+          <section class="tilt" aria-label="Translation tilt">
+            <h3>Where reception can tilt</h3>
+            <p>
+              The slogan "I know nothing" makes the sentence absolute. The
+              Greek is narrower: Socrates marks the boundary between not knowing
+              and not pretending to know. That difference matters for any reader
+              thinking about intelligence, humility, or expertise.
+            </p>
+          </section>
+        </article>
+
+        <article class="example" data-theme="love">
+          <div class="example-heading">
+            <p class="theme-label">Love</p>
+            <h2>Diotima in Plato, Symposium 206a</h2>
+          </div>
+
+          <section class="english-first" aria-label="English first">
+            <h3>English first</h3>
+            <p>Love is the desire to possess the good forever.</p>
+          </section>
+
+          <div class="source-grid">
+            <section aria-label="Greek source">
+              <h3>Critical source text</h3>
+              <blockquote lang="grc">
+                ἔστιν ἄρα συλλήβδην, ἔφη, ὁ ἔρως τοῦ τὸ ἀγαθὸν αὑτῷ εἶναι ἀεί.
+              </blockquote>
+              <p class="source-note">
+                Greek text: John Burnet edition via
+                <a href="https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0173%3Atext%3DSym.%3Apage%3D206">Perseus, Pl. Sym. 206a</a>.
+              </p>
+            </section>
+
+            <section aria-label="Tool evidence">
+              <h3>Tool evidence signals</h3>
+              <ul class="evidence-list">
+                <li><strong>ἔρως</strong> can sit between love, longing, and desire, not only romance.</li>
+                <li><strong>τοῦ ... εἶναι</strong> marks an articular infinitive: the object or aim is "being."</li>
+                <li><strong>αὑτῷ</strong> is reflexive dative: to oneself, for oneself, or as one's own.</li>
+              </ul>
+            </section>
+          </div>
+
+          <section aria-label="Translation variants">
+            <h3>Grammatically viable renderings</h3>
+            <ol class="renderings">
+              <li>So, in sum, love is for the good to be one's own always.</li>
+              <li>Love, taken together, is directed at the good being present to oneself forever.</li>
+              <li>Desire is that the good should belong to oneself always.</li>
+            </ol>
+          </section>
+
+          <section class="tilt" aria-label="Translation tilt">
+            <h3>Where reception can tilt</h3>
+            <p>
+              "Possess" is compact English, but it can sound acquisitive. The
+              Greek construction can also be read around belonging, being
+              present, or being for oneself. "Love" also imports modern romance
+              unless <span lang="grc">ἔρως</span> stays visible.
+            </p>
+          </section>
+        </article>
+      </section>
+
+      <section class="method" id="method" aria-labelledby="method-title">
+        <div>
+          <p class="eyebrow">How to read this demo</p>
+          <h2 id="method-title">Evidence first, interpretation later.</h2>
+        </div>
+        <div class="method-grid">
+          <section>
+            <h3>What is simulated here</h3>
+            <p>
+              The page uses live v0.2 lookup behavior collected locally for the
+              highlighted Greek terms: morphology paths, lexicon signals, and
+              source provenance. It is a public static demo, so it does not run
+              the FastAPI app in your browser.
+            </p>
+          </section>
+          <section>
+            <h3>What it does not claim</h3>
+            <p>
+              It does not claim to recover a single true meaning. It does not
+              claim that any named translator or copyist distorted a text. It
+              shows where grammar, lexical range, historical transmission, and
+              English convention can create different responsible readings.
+            </p>
+          </section>
+          <section>
+            <h3>Run the local tool</h3>
+            <p>
+              Start the app from the repository, paste one of the Greek lines,
+              set the historical cutoff, and click the key words. The local app
+              exposes the raw evidence branches instead of selecting one answer.
+            </p>
+            <a class="secondary-link" href="https://github.com/filipzarzynski/ancient-unfiltered#quick-start">Local quick start</a>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Ancient Unfiltered v0.2 demo. Source texts are linked beside each passage.</p>
+      <a href="https://github.com/filipzarzynski/ancient-unfiltered/blob/main/LICENSE">GPL-3.0-or-later</a>
+    </footer>
+  </body>
+</html>

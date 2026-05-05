@@ -95,7 +95,27 @@ Plato, Apology 17a
 
 When using real Greek text in examples, preserve Unicode polytonic Greek in the app and tests.
 
-### 3.2. Source Sentence Estimation
+### 3.2. Public Demo Page
+
+The repository may ship a static GitHub Pages demo under `docs/` to show the
+reader promise before a user installs the local app.
+
+The demo must obey the same source-first rules as the runtime:
+
+- show English reception first only as an invitation, not as authority
+- show the Greek source wording and source provenance beside every example
+- label source text as a cited public/critical text, not as a final original
+- present multiple grammatically viable renderings without choosing one
+- explain translation drift as a possibility created by grammar, copying,
+  edition, and translator choice, not as proof of deliberate distortion
+- avoid any claim that the project has recovered a single true interpretation
+- remain static HTML/CSS/JS with no frontend build step
+- meet the same accessibility and responsive-design expectations as the app
+
+The public demo is user-facing documentation. It must not become a second
+runtime, a corpus, or a separate product specification.
+
+### 3.3. Source Sentence Estimation
 
 For dictionary citations such as `Plat. Ap. 17a`, `Hom. Il. 1.1`, or `Arist. Metaph. 980a`, the app should attempt to retrieve the cited passage and extract the sentence or nearest explicit context containing the cited word or lemma.
 
@@ -112,7 +132,7 @@ The backend must return:
 
 If retrieval fails, the app should show the citation and a clear `source sentence unavailable` state.
 
-### 3.3. Minimal, Appealing, Accessible UI
+### 3.4. Minimal, Appealing, Accessible UI
 
 The v0.2 interface should feel like a quiet research desk rather than a technical demo.
 
@@ -152,6 +172,7 @@ v0.2 must preserve the v0.1 local-first architecture.
 |   |-- lexica.py
 |   |-- passages.py
 |   `-- etymology.py
+|-- docs/                  # static GitHub Pages demo
 |-- static/
 |   |-- index.html
 |   |-- style.css

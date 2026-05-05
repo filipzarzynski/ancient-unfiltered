@@ -28,6 +28,7 @@ v0.2 must expand beyond the v0.1 Latin MVP into Greek works, improve the reading
 10. **GPL-3 compliance:** Preserve GPL notices in major files.
 11. **SSOT discipline:** Add or change scaffold requirements only in `spec.md`, then propagate outward.
 12. **Memory palace is an index:** Keep `mempalace.md` navigational. It must not become a second product spec.
+13. **Public demo discipline:** If publishing `docs/` to GitHub Pages, keep it static, sourced, accessible, and non-authoritative as defined in `spec.md`.
 
 ## 3. Execution Phases
 
@@ -235,6 +236,27 @@ Exit criteria:
 
 - README has a Greek walkthrough and a Latin regression walkthrough.
 - README includes actual test commands and outcomes.
+
+### Phase 8A: Public Demo Page Agent
+
+**Persona:** Accessible public-facing product documentarian
+**Objective:** Publish a static GitHub Pages demo that communicates the product promise before installation.
+
+Instructions:
+
+1. Read `spec.md` section 3.2 before editing `docs/`.
+2. Use well-sourced ancient examples with visible Greek and citation links.
+3. Show English reception first, then the source Greek, then evidence signals and multiple grammatically viable renderings.
+4. Make clear that the demo shows translation drift possibilities, not a recovered final meaning and not proof of bad-faith translators or copyists.
+5. Keep the page static: no frontend build, no remote JavaScript dependencies, no local API dependency for viewing the page.
+6. Validate desktop and mobile rendering before enabling or updating GitHub Pages.
+
+Exit criteria:
+
+- `docs/index.html` renders as a standalone public page.
+- Examples include source links and provenance.
+- The page is keyboard-usable and responsive.
+- GitHub Pages is configured to serve from `main` `/docs`.
 
 ### Phase 9: Release Verification Agent
 

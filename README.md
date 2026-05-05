@@ -4,6 +4,15 @@
 
 The app does not choose the correct interpretation. It exposes evidence and provenance so readers can decide what to do with it.
 
+Public demo:
+
+```text
+https://filipzarzynski.github.io/ancient-unfiltered/
+```
+
+The demo shows four Greek philosophical examples in English first, then beside
+the source Greek and multiple grammar-respecting renderings.
+
 ## What v0.2 Gives You
 
 - **Greek and Latin lookup:** `Auto`, `Greek`, and `Latin` modes.
@@ -87,6 +96,7 @@ Live v0.2 regression result on 2026-05-05:
 |-- database.py            # SQLite cache
 |-- philology.py           # high-level orchestration
 |-- sources/               # morphology, lexica, passages, etymology, chronology
+|-- docs/                  # static GitHub Pages demo
 |-- mempalace.md           # project memory index, not a second spec
 |-- requirements.txt
 |-- static/
