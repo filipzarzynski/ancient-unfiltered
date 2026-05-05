@@ -1,0 +1,55 @@
+<!--
+Local Diachronic Philology Engine
+Copyright (C) 2026 Filip Zarzynski
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ancient Unfiltered</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="Text workspace">
+        <header class="topbar">
+          <div>
+            <h1>Ancient Unfiltered</h1>
+            <p>Local diachronic philology engine</p>
+          </div>
+          <form class="controls" id="process-form">
+            <label for="cutoff-year">Cutoff year</label>
+            <input id="cutoff-year" name="year" type="number" value="-50" min="-3000" max="2100" step="1" />
+            <button type="submit" title="Process text">
+              <span>Process</span>
+            </button>
+          </form>
+        </header>
+
+        <label class="input-label" for="source-text">Source text</label>
+        <textarea id="source-text" spellcheck="false">Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.</textarea>
+
+        <section class="text-output" aria-label="Processed text">
+          <div id="processed-text" class="processed-text"></div>
+        </section>
+      </section>
+
+      <aside class="side-panel" aria-label="Directory tree">
+        <div class="panel-heading">
+          <h2>Directory Tree</h2>
+          <span id="query-state" class="query-state">Idle</span>
+        </div>
+        <div id="tree-root" class="tree-root">
+          <p class="empty-state">Process text, then select a word.</p>
+        </div>
+      </aside>
+    </main>
+    <script src="/static/script.js"></script>
+  </body>
+</html>

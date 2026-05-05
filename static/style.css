@@ -1,0 +1,275 @@
+/*
+Local Diachronic Philology Engine
+Copyright (C) 2026 Filip Zarzynski
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+*/
+
+:root {
+  color-scheme: light;
+  --paper: #f7f5ef;
+  --surface: #ffffff;
+  --surface-strong: #ece7dc;
+  --ink: #25221e;
+  --muted: #676057;
+  --line: #d6d0c4;
+  --accent: #7a2f24;
+  --accent-strong: #5d211a;
+  --green: #285d4a;
+  --focus: #2d5f9a;
+  --shadow: 0 16px 45px rgba(30, 27, 23, 0.09);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 0;
+  min-height: 100vh;
+}
+
+.workspace {
+  display: grid;
+  grid-template-rows: auto minmax(150px, 28vh) minmax(240px, 1fr);
+  gap: 18px;
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.topbar p {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: auto 110px auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.controls label,
+.input-label {
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-transform: uppercase;
+}
+
+.controls input {
+  width: 110px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 11px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  background: var(--accent-strong);
+}
+
+textarea {
+  width: 100%;
+  min-height: 100%;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1.55;
+  box-shadow: var(--shadow);
+}
+
+.text-output {
+  min-height: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.processed-text {
+  min-height: 100%;
+  max-width: 74ch;
+  font-size: 1.18rem;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.interactive-word {
+  border-bottom: 1px dashed var(--green);
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.interactive-word:hover,
+.interactive-word:focus {
+  color: var(--accent);
+  outline: 2px solid transparent;
+}
+
+.interactive-word.is-selected {
+  background: #ead7bd;
+  border-bottom-color: var(--accent);
+}
+
+.side-panel {
+  min-width: 0;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  padding: 24px;
+  overflow: auto;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-heading h2 {
+  font-size: 1.15rem;
+}
+
+.query-state {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.tree-root {
+  padding-top: 16px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.empty-state,
+.error-state {
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.error-state {
+  color: var(--accent);
+}
+
+details {
+  margin: 8px 0;
+  border-left: 2px solid var(--surface-strong);
+  padding-left: 12px;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.tree-leaf {
+  margin: 6px 0 6px 18px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.tree-list {
+  margin: 8px 0 8px 20px;
+  padding: 0;
+}
+
+.tree-list li {
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 860px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace {
+    grid-template-rows: auto minmax(180px, 30vh) auto;
+    padding: 20px;
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .controls {
+    grid-template-columns: 1fr 110px auto;
+  }
+
+  .side-panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    max-height: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .controls input,
+  .controls button {
+    width: 100%;
+  }
+}
