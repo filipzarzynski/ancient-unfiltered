@@ -390,7 +390,7 @@ function renderCorpusFocus(entry) {
     <section class="translation-preview">
       <h2>Selected-path translation preview</h2>
       <p class="path-summary"></p>
-      <p class="selected-output">${escapeHtml(entry.example_selected_output)}</p>
+      <p class="selected-output"></p>
     </section>
     <section>
       <h2>Equal-weight alternative renderings</h2>
@@ -403,6 +403,7 @@ function renderCorpusFocus(entry) {
 }
 
 function bindCorpusFocus(entry) {
+  const selectedOutput = corpusFocus.querySelector(".selected-output");
   const updateSummary = () => {
     const selected = {};
     corpusFocus.querySelectorAll(".path-field input:checked").forEach((input) => {
@@ -412,12 +413,20 @@ function bindCorpusFocus(entry) {
     writeJsonStorage(PATH_SELECTIONS_KEY, pathSelections);
     const summary = Object.entries(selected).map(([token, option]) => `${token}: ${option}`).join(" | ");
     corpusFocus.querySelector(".path-summary").textContent = summary || "No path selected.";
+    selectedOutput.textContent = buildSelectedOutput(entry, selected);
   };
 
   corpusFocus.querySelectorAll(".path-field input").forEach((input) => {
     input.addEventListener("change", updateSummary);
   });
   updateSummary();
+}
+
+function buildSelectedOutput(entry, selected) {
+  const choices = Object.values(selected).filter(Boolean);
+  const base = entry.alternative_translations?.[0] || entry.example_selected_output || "";
+  if (!choices.length) return base || "No selected-path preview available.";
+  return `${base} [selected path: ${choices.join(" / ")}]`;
 }
 
 function parsePathOptions(raw) {

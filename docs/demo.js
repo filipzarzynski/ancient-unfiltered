@@ -54,6 +54,21 @@ function selectedPathSummary(container) {
   }).join(" | ");
 }
 
+function selectedPathMap(container) {
+  return Object.fromEntries([...container.querySelectorAll(".path-field")].map((field) => {
+    const token = field.querySelector("legend span").textContent;
+    const checked = field.querySelector("input:checked");
+    return [token, checked ? checked.value : ""];
+  }));
+}
+
+function buildSelectedOutput(entry, selected) {
+  const choices = Object.values(selected).filter(Boolean);
+  const base = entry.alternative_translations?.[0] || entry.example_selected_output || "";
+  if (!choices.length) return base || "No selected-path preview available.";
+  return `${base} [selected path: ${choices.join(" / ")}]`;
+}
+
 function renderFocusedPair(entry) {
   pairFocus.innerHTML = `
     <div class="pair-meta">
@@ -80,9 +95,9 @@ function renderFocusedPair(entry) {
       <div class="path-grid">${renderPathOptions(entry)}</div>
     </section>
     <section class="translation-preview">
-      <h3>Example selected output</h3>
+      <h3>Selected-path translation preview</h3>
       <p class="path-summary"></p>
-      <p class="selected-output">${entry.example_selected_output}</p>
+      <p class="selected-output"></p>
     </section>
     <section>
       <h3>Other grammar-respecting renderings</h3>
@@ -93,7 +108,9 @@ function renderFocusedPair(entry) {
   `;
 
   const updateSummary = () => {
+    const selected = selectedPathMap(pairFocus);
     pairFocus.querySelector(".path-summary").textContent = selectedPathSummary(pairFocus);
+    pairFocus.querySelector(".selected-output").textContent = buildSelectedOutput(entry, selected);
   };
 
   pairFocus.querySelectorAll("input[type='radio']").forEach((input) => {
