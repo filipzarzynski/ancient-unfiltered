@@ -423,10 +423,29 @@ function bindCorpusFocus(entry) {
 }
 
 function buildSelectedOutput(entry, selected) {
-  const choices = Object.values(selected).filter(Boolean);
-  const base = entry.alternative_translations?.[0] || entry.example_selected_output || "";
-  if (!choices.length) return base || "No selected-path preview available.";
-  return `${base} [selected path: ${choices.join(" / ")}]`;
+  const template = entry.example_selected_output || entry.alternative_translations?.[0] || "";
+  if (!template) return "No selected-path preview available.";
+  return (entry.path_options || []).reduce((output, path) => {
+    const selectedOption = selected[path.token];
+    return selectedOption ? replaceKnownOption(output, path.options || [], selectedOption) : output;
+  }, template);
+}
+
+function replaceKnownOption(text, options, selectedOption) {
+  const alternatives = [...options]
+    .filter((option) => option && option !== selectedOption)
+    .sort((left, right) => right.length - left.length);
+  for (const option of alternatives) {
+    const next = replacePhrase(text, option, selectedOption);
+    if (next !== text) return next;
+  }
+  return text;
+}
+
+function replacePhrase(text, phrase, replacement) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`(^|[^A-Za-z])(${escaped})(?=$|[^A-Za-z])`, "gi");
+  return text.replace(pattern, (_, prefix) => `${prefix}${replacement}`);
 }
 
 function parsePathOptions(raw) {
